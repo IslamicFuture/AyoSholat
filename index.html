@@ -3,351 +3,332 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AyoSholat - Media Pembelajaran Interaktif</title>
-
-  <!-- Menghubungkan file CSS -->
+  <title>AyoSholat – Belajar Sholat Lebih Mudah dan Bermakna</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <!-- =========================
-       NAVBAR
-  ========================== -->
-  <header class="navbar">
-    <div class="container nav-container">
-      <h1 class="logo">AyoSholat</h1>
+  <!-- ===================== NAVBAR ===================== -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <!-- Logo / Nama Produk -->
+      <a href="#hero" class="nav-logo">🕌 AyoSholat</a>
 
-      <!-- Tombol Hamburger -->
-      <button class="hamburger" id="hamburger">
-        ☰
+      <!-- Tombol Hamburger untuk Mobile -->
+      <button class="hamburger" id="hamburger" aria-label="Buka menu">
+        <span></span>
+        <span></span>
+        <span></span>
       </button>
 
-      <!-- Menu Navbar -->
-      <nav class="nav-menu" id="navMenu">
-        <a href="#hero">Beranda</a>
-        <a href="#masalah">Masalah</a>
-        <a href="#solusi">Solusi</a>
-        <a href="#fitur">Fitur</a>
-        <a href="#akses">Akses</a>
-        <a href="#tim">Tim</a>
-      </nav>
+      <!-- Menu Navigasi -->
+      <ul class="nav-menu" id="nav-menu">
+        <li><a href="#hero"    class="nav-link">Beranda</a></li>
+        <li><a href="#masalah" class="nav-link">Masalah</a></li>
+        <li><a href="#solusi"  class="nav-link">Solusi</a></li>
+        <li><a href="#fitur"   class="nav-link">Fitur</a></li>
+        <li><a href="#akses"   class="nav-link">Akses</a></li>
+        <li><a href="#tim"     class="nav-link">Tim</a></li>
+      </ul>
     </div>
-  </header>
+  </nav>
 
-  <!-- =========================
-       HERO SECTION
-  ========================== -->
+  <!-- ===================== HERO ===================== -->
   <section class="hero" id="hero">
     <div class="container hero-grid">
 
-      <!-- Kolom Kiri -->
-      <div class="hero-text reveal">
-        <p class="tag">Media Pembelajaran Interaktif</p>
-
-        <h2>
-          AyoSholat: Belajar Sholat Lebih Mudah dan Bermakna
-        </h2>
-
-        <p>
-          AyoSholat adalah aplikasi pembelajaran berbasis web yang membantu siswa memahami makna salat dan zikir secara interaktif, mudah dipahami, dan terstruktur.
+      <!-- Kolom Kiri: Teks -->
+      <div class="hero-text fade-in">
+        <span class="badge">✨ Aplikasi Pembelajaran PAI</span>
+        <h1 class="hero-title">AyoSholat</h1>
+        <p class="hero-tagline">Belajar Sholat Lebih Mudah dan Bermakna</p>
+        <p class="hero-desc">
+          Aplikasi pembelajaran berbasis web yang dirancang untuk membantu siswa memahami
+          makna salat dan zikir secara lebih mudah, interaktif, dan terstruktur.
         </p>
-
         <div class="hero-buttons">
-          <a href="belajar.html" class="btn primary-btn">
-            Mulai Belajar
-          </a>
-
-          <a href="#fitur" class="btn secondary-btn">
-            Lihat Fitur
-          </a>
+          <a href="belajar.html" class="btn btn-primary">🎓 Mulai Belajar</a>
+          <a href="#akses"       class="btn btn-outline">Lihat Demo</a>
         </div>
       </div>
 
-      <!-- Kolom Kanan -->
-      <div class="hero-image reveal">
+      <!-- Kolom Kanan: Gambar -->
+      <div class="hero-image fade-in">
         <img
           src="https://i.ibb.co.com/svG71q4G/Chat-GPT-Image-18-Mei-2026-18-42-46.png"
           alt="GAMBAR_HERO"
-          class="image-fallback"
+          class="hero-img"
+          onerror="this.parentElement.innerHTML='<div class=img-fallback>🖼️<br>Gambar belum ditambahkan</div>'"
         />
       </div>
 
     </div>
   </section>
 
-  <!-- =========================
-       SECTION MASALAH
-  ========================== -->
-  <section class="section" id="masalah">
+  <!-- ===================== MASALAH ===================== -->
+  <section class="section section-light" id="masalah">
     <div class="container">
-
-      <div class="section-title reveal">
+      <div class="section-header fade-in">
+        <span class="badge badge-accent">Latar Belakang</span>
         <h2>Kurangnya Media Pembelajaran Interaktif untuk Memahami Makna Salat dan Zikir</h2>
-
-        <p>
-          Dalam proses pembelajaran Pendidikan Agama Islam, khususnya pada materi salat dan zikir, masih terdapat beberapa kendala yang menyebabkan siswa kurang memahami makna ibadah serta penerapannya dalam kehidupan sehari-hari.
+        <p class="section-desc">
+          Dalam proses pembelajaran Pendidikan Agama Islam, khususnya pada materi salat dan
+          zikir, masih terdapat beberapa kendala yang menyebabkan siswa kurang memahami
+          makna ibadah serta penerapannya dalam kehidupan sehari-hari.
         </p>
       </div>
 
-      <div class="card-grid">
+      <!-- 3 Card Masalah -->
+      <div class="cards-grid fade-in">
 
-        <div class="card reveal">
-          <h3>Metode Pembelajaran Konvensional</h3>
-
+        <div class="card card-problem">
+          <div class="card-icon">📚</div>
+          <h3>Metode Konvensional</h3>
           <p>
-            Pembelajaran salat dan zikir di sekolah masih cenderung menggunakan metode konvensional sehingga siswa kurang tertarik dan kurang aktif dalam proses belajar.
+            Pembelajaran salat dan zikir di sekolah masih cenderung menggunakan metode
+            konvensional sehingga siswa kurang tertarik dan kurang aktif dalam proses belajar.
           </p>
         </div>
 
-        <div class="card reveal">
-          <h3>Media Pembelajaran Terbatas</h3>
-
+        <div class="card card-problem">
+          <div class="card-icon">🌐</div>
+          <h3>Belum Ada Media Interaktif</h3>
           <p>
-            Belum tersedianya media pembelajaran berbasis web yang interaktif dan mudah diakses untuk membantu siswa belajar secara mandiri di luar jam pelajaran.
+            Belum tersedianya media pembelajaran berbasis web yang interaktif dan mudah
+            diakses untuk membantu siswa belajar secara mandiri di luar jam pelajaran.
           </p>
         </div>
 
-        <div class="card reveal">
-          <h3>Kurangnya Evaluasi Interaktif</h3>
-
+        <div class="card card-problem">
+          <div class="card-icon">📝</div>
+          <h3>Minimnya Evaluasi</h3>
           <p>
-            Kurangnya fitur evaluasi seperti kuis interaktif yang dapat membantu siswa mengukur pemahaman mereka terhadap materi salat dan zikir secara langsung.
+            Kurangnya fitur evaluasi seperti kuis interaktif yang dapat membantu siswa
+            mengukur pemahaman mereka terhadap materi salat dan zikir secara langsung.
           </p>
         </div>
 
       </div>
 
-      <div class="target-box reveal">
-        <h3>Target Pengguna</h3>
-
-        <p>
-          Siswa Sekolah Menengah Pertama (SMP/MTs) kelas VII sebagai pengguna utama, serta guru Pendidikan Agama Islam sebagai media pendukung pembelajaran di kelas.
-        </p>
+      <!-- Target Pengguna -->
+      <div class="target-box fade-in">
+        <span class="target-label">🎯 Target Pengguna:</span>
+        Siswa SMP/MTs kelas VII sebagai pengguna utama, serta guru Pendidikan Agama Islam
+        sebagai media pendukung pembelajaran di kelas.
       </div>
-
     </div>
   </section>
 
-  <!-- =========================
-       SECTION SOLUSI
-  ========================== -->
-  <section class="section alt-bg" id="solusi">
-    <div class="container solution-grid">
-
-      <div class="solution-image reveal">
-        <img
-          src="https://i.ibb.co.com/Q3MYLM4L/Chat-GPT-Image-May-18-2026-06-54-21-PM.png"
-          alt="Gambar Solusi"
-          class="image-fallback"
-        />
-      </div>
-
-      <div class="solution-content reveal">
-
-        <div class="section-title left">
-          <h2>AyoSholat sebagai Media Pembelajaran Interaktif Berbasis Web</h2>
-        </div>
-
-        <p>
-          AyoSholat dikembangkan sebagai aplikasi pembelajaran berbasis web yang membantu siswa memahami makna salat dan zikir secara lebih mudah, interaktif, dan terstruktur.
-        </p>
-
-        <p>
-          Aplikasi ini menyediakan materi pembelajaran yang dapat diakses kapan saja dan di mana saja, sehingga siswa dapat belajar secara mandiri maupun bersama guru di kelas.
-        </p>
-
-        <p>
-          Selain itu, AyoSholat dilengkapi dengan fitur interaktif seperti kuis evaluasi, forum diskusi, dan kolom komentar untuk meningkatkan keterlibatan pengguna dalam proses pembelajaran.
-        </p>
-
-        <div class="info-box">
-          <h3>Cara Kerja Singkat</h3>
-
-          <p>
-            Pengguna dapat mengakses aplikasi melalui browser, kemudian memilih materi pada menu pembelajaran. Setelah mempelajari materi, pengguna dapat mengerjakan kuis evaluasi, berdiskusi melalui forum, serta memberikan komentar dan masukan.
-          </p>
-        </div>
-
-        <ul class="benefit-list">
-          <li>Membantu siswa memahami makna salat dan zikir secara lebih mendalam dan terstruktur.</li>
-          <li>Meningkatkan minat dan motivasi belajar siswa melalui fitur interaktif.</li>
-          <li>Memudahkan akses pembelajaran kapan saja dan di mana saja.</li>
-        </ul>
-
-      </div>
-
-    </div>
-  </section>
-
-  <!-- =========================
-       SECTION FITUR
-  ========================== -->
-  <section class="section" id="fitur">
+  <!-- ===================== SOLUSI ===================== -->
+  <section class="section section-primary" id="solusi">
     <div class="container">
+      <div class="section-header fade-in">
+        <span class="badge badge-white">Tentang Produk</span>
+        <h2>AyoSholat sebagai Media Pembelajaran Interaktif Berbasis Web</h2>
+      </div>
 
-      <div class="section-title reveal">
+      <div class="solusi-grid fade-in">
+
+        <!-- Teks Solusi -->
+        <div class="solusi-text">
+          <p>
+            AyoSholat dikembangkan sebagai aplikasi pembelajaran berbasis web yang membantu
+            siswa memahami makna salat dan zikir secara lebih mudah, interaktif, dan
+            terstruktur. Aplikasi ini menyediakan materi pembelajaran yang dapat diakses
+            kapan saja dan di mana saja.
+          </p>
+          <p>
+            Selain itu, AyoSholat dilengkapi dengan fitur interaktif seperti kuis evaluasi,
+            forum diskusi, dan kolom komentar untuk meningkatkan keterlibatan pengguna dalam
+            proses pembelajaran.
+          </p>
+
+          <!-- Cara Kerja -->
+          <div class="cara-kerja">
+            <h4>📋 Cara Kerja Singkat</h4>
+            <p>
+              Pengguna mengakses aplikasi melalui browser, memilih materi pada menu
+              pembelajaran, mengerjakan kuis evaluasi, berdiskusi melalui forum, serta
+              memberikan komentar dan masukan terkait materi.
+            </p>
+          </div>
+
+          <!-- Manfaat -->
+          <ul class="manfaat-list">
+            <li>✅ Membantu siswa memahami makna salat dan zikir secara mendalam dan terstruktur.</li>
+            <li>✅ Meningkatkan minat dan motivasi belajar melalui fitur interaktif dan evaluasi.</li>
+            <li>✅ Memudahkan akses materi kapan saja dan di mana saja melalui perangkat berbasis web.</li>
+          </ul>
+        </div>
+
+        <!-- Gambar Solusi -->
+        <div class="solusi-image">
+          <img
+            src="https://i.ibb.co.com/Q3MYLM4L/Chat-GPT-Image-May-18-2026-06-54-21-PM.png"
+            alt="Gambar Solusi"
+            class="solusi-img"
+            onerror="this.parentElement.innerHTML='<div class=img-fallback>🖼️<br>Gambar belum ditambahkan</div>'"
+          />
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FITUR ===================== -->
+  <section class="section section-light" id="fitur">
+    <div class="container">
+      <div class="section-header fade-in">
+        <span class="badge badge-accent">Apa yang Tersedia</span>
         <h2>Fitur Utama AyoSholat</h2>
-
-        <p>
-          AyoSholat menyediakan berbagai fitur pembelajaran interaktif yang dirancang untuk membantu siswa memahami materi salat dan zikir secara lebih mudah, menarik, dan menyenangkan.
+        <p class="section-desc">
+          AyoSholat menyediakan berbagai fitur pembelajaran interaktif yang dirancang untuk
+          membantu siswa memahami materi salat dan zikir secara lebih mudah, menarik, dan
+          menyenangkan.
         </p>
       </div>
 
-      <div class="feature-grid">
+      <!-- Grid Fitur -->
+      <div class="fitur-grid fade-in">
 
-        <div class="feature-card reveal">
+        <div class="card card-fitur">
+          <div class="card-icon-large">📖</div>
           <h3>Let's Learning</h3>
-
           <p>
-            Menyediakan materi pembelajaran tentang makna salat, makna zikir, hubungan salat dengan akhlak, serta pentingnya mengamalkan salat lima waktu secara konsisten.
+            Menyediakan materi pembelajaran tentang makna salat, makna zikir, hubungan
+            salat dengan akhlak, serta pentingnya mengamalkan salat lima waktu secara
+            konsisten.
           </p>
         </div>
 
-        <div class="feature-card reveal">
+        <div class="card card-fitur">
+          <div class="card-icon-large">💬</div>
           <h3>Let's Discussion</h3>
-
           <p>
-            Forum diskusi dan kolom komentar yang memungkinkan siswa bertanya, berdiskusi, dan berbagi pendapat terkait materi pembelajaran.
+            Forum diskusi dan kolom komentar yang memungkinkan siswa bertanya, berdiskusi,
+            dan berbagi pendapat terkait materi pembelajaran.
           </p>
-                    <!-- LET'S DISCUSSION -->
-<a href="https://forms.gle/aNUfbZR8rAwT1SsE7" target="_blank" class="feature-card">
-    <h3>Let's Discussion</h3>
-    <p>
-        Forum diskusi dan kolom komentar yang memungkinkan siswa bertanya,
-        berdiskusi, dan berbagi pendapat terkait materi pembelajaran.
-    </p>
-</a>
         </div>
 
-        <div class="feature-card reveal">
-          <h3>Suggestion & Feedback</h3>
-
+        <div class="card card-fitur">
+          <div class="card-icon-large">💡</div>
+          <h3>Suggestion &amp; Feedback</h3>
           <p>
-            Fitur saran dan masukan pengguna yang dapat digunakan untuk memberikan ide pengembangan aplikasi, pelaporan bug, serta penilaian terhadap materi pembelajaran.
+            Fitur saran dan masukan pengguna yang dapat digunakan untuk memberikan ide
+            pengembangan aplikasi, pelaporan bug, serta penilaian terhadap materi
+            pembelajaran.
           </p>
-<!-- SUGGESTION & FEEDBACK -->
-<a href="https://forms.gle/BByndJT7RZAymSJcA" target="_blank" class="feature-card">
-    <h3>Suggestion & Feedback</h3>
-    <p>
-        Fitur saran dan masukan pengguna yang dapat digunakan untuk memberikan
-        ide pengembangan aplikasi, pelaporan bug, serta penilaian terhadap materi pembelajaran.
-    </p>
-</a>
         </div>
 
       </div>
-
     </div>
   </section>
 
-  <!-- =========================
-       SECTION AKSES PRODUK
-  ========================== -->
-  <section class="section access-section" id="akses">
-    <div class="container reveal">
-
-      <h2>Akses Produk dan Demo Aplikasi</h2>
-
-      <p>
-        Pengguna dapat mencoba dan mengakses aplikasi AyoSholat secara langsung melalui website pembelajaran yang telah dikembangkan.
-      </p>
-
-      <div class="access-buttons">
-
-        <a href="belajar.html" class="btn primary-btn">
-          Mulai Belajar
-        </a>
-
-        <a href="#" class="btn secondary-btn">
-          Download APK
-        </a>
-
-      </div>
-
-    </div>
-  </section>
-
-  <!-- =========================
-       SECTION TIM
-  ========================== -->
-  <section class="section" id="tim">
+  <!-- ===================== AKSES PRODUK ===================== -->
+  <section class="section section-accent" id="akses">
     <div class="container">
-
-      <div class="section-title reveal">
-        <h2>Tim Islamic Future</h2>
-
+      <div class="akses-box fade-in">
+        <span class="badge badge-white">Coba Sekarang</span>
+        <h2>Akses Produk dan Demo Aplikasi</h2>
         <p>
-          Tim Islamic Future merupakan kelompok mahasiswa yang berkolaborasi dalam mengembangkan aplikasi pembelajaran berbasis web bernama AyoSholat.
+          Pengguna dapat mencoba dan mengakses aplikasi AyoSholat secara langsung melalui
+          website pembelajaran yang telah dikembangkan. Aplikasi ini dapat digunakan untuk
+          mempelajari materi, mengerjakan kuis, serta berinteraksi melalui forum diskusi
+          secara online.
+        </p>
+        <div class="akses-buttons">
+          <!-- Tombol ke halaman pembelajaran -->
+          <a href="belajar.html" class="btn btn-white">🎓 Mulai Belajar</a>
+          <!-- Tombol download APK (opsional) -->
+          <a href="#" class="btn btn-outline-white">📥 Download APK</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== TIM ===================== -->
+  <section class="section section-light" id="tim">
+    <div class="container">
+      <div class="section-header fade-in">
+        <span class="badge badge-accent">Pengembang</span>
+        <h2>Tim Islamic Future</h2>
+        <p class="section-desc">
+          Tim Islamic Future merupakan kelompok mahasiswa yang berkolaborasi dalam
+          mengembangkan aplikasi pembelajaran berbasis web bernama AyoSholat. Dengan
+          menggabungkan kreativitas, teknologi, dan nilai-nilai islami, Tim Islamic Future
+          berkomitmen menciptakan aplikasi pembelajaran yang edukatif, menarik, dan
+          bermanfaat bagi generasi muda.
         </p>
       </div>
 
-      <div class="team-grid">
+      <!-- Grid Anggota Tim -->
+      <div class="tim-grid fade-in">
 
-        <div class="team-card reveal">
-          <img
-            src="https://i.ibb.co.com/LXqMJshV/Whats-App-Image-2026-05-18-at-12-39-22.jpg"
-            alt="ALT Foto Alyaa"
-            class="profile-image image-fallback"
-          />
-
+        <!-- Anggota 1 -->
+        <div class="card card-tim">
+          <div class="foto-wrapper">
+            <img
+              src="https://i.ibb.co.com/LXqMJshV/Whats-App-Image-2026-05-18-at-12-39-22.jpg"
+              alt="ALT Foto Alyaa"
+              class="foto-profil"
+              onerror="this.src='';this.parentElement.innerHTML='<div class=foto-fallback>👤</div>'"
+            />
+          </div>
           <h3>Alyaa Tirta R</h3>
-          <p>Pengembang Aplikasi</p>
+          <span class="peran">Pengembang Aplikasi</span>
         </div>
 
-        <div class="team-card reveal">
-          <img
-            src="https://i.ibb.co.com/Kp9wNLJz/Whats-App-Image-2026-05-04-at-16-32-38.jpg"
-            alt="Foto Dhimas"
-            class="profile-image image-fallback"
-          />
-
+        <!-- Anggota 2 -->
+        <div class="card card-tim">
+          <div class="foto-wrapper">
+            <img
+              src="https://i.ibb.co.com/Kp9wNLJz/Whats-App-Image-2026-05-04-at-16-32-38.jpg"
+              alt="Foto Dhimas"
+              class="foto-profil"
+              onerror="this.src='';this.parentElement.innerHTML='<div class=foto-fallback>👤</div>'"
+            />
+          </div>
           <h3>Dhimas Ashfiya Apridpa</h3>
-          <p>Graphic Designer</p>
+          <span class="peran">Graphic Designer</span>
         </div>
 
-        <div class="team-card reveal">
-          <img
-            src="https://i.ibb.co.com/vxFtqxNx/potoku.jpg"
-            alt="Foto Chesta"
-            class="profile-image image-fallback"
-          />
-
+        <!-- Anggota 3 -->
+        <div class="card card-tim">
+          <div class="foto-wrapper">
+            <img
+              src="https://i.ibb.co.com/vxFtqxNx/potoku.jpg"
+              alt="Foto Chesta"
+              class="foto-profil"
+              onerror="this.src='';this.parentElement.innerHTML='<div class=foto-fallback>👤</div>'"
+            />
+          </div>
           <h3>Chesta Aulia</h3>
-          <p>Content Developer</p>
+          <span class="peran">Content Developer</span>
         </div>
 
       </div>
-
     </div>
   </section>
 
-  <!-- =========================
-       FOOTER
-  ========================== -->
+  <!-- ===================== FOOTER ===================== -->
   <footer class="footer">
-
     <div class="container">
-
-      <h3>Tim Islamic Future</h3>
-
-      <p>
-        Pendidikan Agama Islam Universitas Muhammadiyah Yogyakarta
-      </p>
-
-      <p>
-        AyoSholat - Media Pembelajaran Interaktif Salat dan Zikir untuk Generasi Islami.
-      </p>
-
-      <p class="copyright">
-        © 2026 Tim Islamic Future
-      </p>
-
+      <div class="footer-content">
+        <div class="footer-brand">
+          <span class="footer-logo">🕌 AyoSholat</span>
+          <p>Media Pembelajaran Interaktif Salat dan Zikir untuk Generasi Islami.</p>
+        </div>
+        <div class="footer-info">
+          <p><strong>Tim Islamic Future</strong></p>
+          <p>Pendidikan Agama Islam</p>
+          <p>Universitas Muhammadiyah Yogyakarta</p>
+          <p>© 2026 – Semua Hak Dilindungi</p>
+        </div>
+      </div>
     </div>
-
   </footer>
 
-  <!-- Menghubungkan file JavaScript -->
+  <!-- Hubungkan ke JavaScript -->
   <script src="script.js"></script>
-
 </body>
 </html>
