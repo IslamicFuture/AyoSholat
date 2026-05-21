@@ -1,67 +1,109 @@
-// =========================
-// HAMBURGER MENU
-// =========================
+// =====================================================
+// SCRIPT.JS – AyoSholat Landing Page
+// Tim Islamic Future – PAI UMY 2026
+// =====================================================
 
-const hamburger = document.getElementById("hamburger");
-const navMenu = document.getElementById("navMenu");
+// ===================== HAMBURGER MENU =====================
+// Fungsi: membuka/menutup menu navigasi di tampilan mobile
 
-if (hamburger) {
-  hamburger.addEventListener("click", () => {
-    navMenu.classList.toggle("active");
-  });
-}
+// Ambil elemen hamburger dan menu dari HTML
+var hamburger = document.getElementById('hamburger');
+var navMenu   = document.getElementById('nav-menu');
 
-// =========================
-// TUTUP MENU SAAT LINK DIKLIK
-// =========================
+// Tambahkan event klik pada tombol hamburger
+hamburger.addEventListener('click', function () {
+  // Toggle class 'aktif' pada hamburger (animasi ikon)
+  hamburger.classList.toggle('aktif');
+  // Toggle class 'terbuka' pada menu (tampilkan/sembunyikan)
+  navMenu.classList.toggle('terbuka');
+});
 
-const navLinks = document.querySelectorAll(".nav-menu a");
-
-navLinks.forEach(link => {
-  link.addEventListener("click", () => {
-    navMenu.classList.remove("active");
+// Tutup menu otomatis saat salah satu link diklik
+var navLinks = document.querySelectorAll('.nav-link');
+navLinks.forEach(function (link) {
+  link.addEventListener('click', function () {
+    hamburger.classList.remove('aktif');
+    navMenu.classList.remove('terbuka');
   });
 });
 
-// =========================
-// ANIMASI SCROLL
-// =========================
 
-const revealElements = document.querySelectorAll(".reveal");
+// ===================== NAVBAR SCROLL SHADOW =====================
+// Fungsi: menambahkan bayangan pada navbar saat halaman discroll ke bawah
 
-function revealOnScroll() {
-  const windowHeight = window.innerHeight;
+var navbar = document.getElementById('navbar');
 
-  revealElements.forEach(element => {
-    const elementTop = element.getBoundingClientRect().top;
+window.addEventListener('scroll', function () {
+  if (window.scrollY > 50) {
+    navbar.classList.add('scrolled');
+  } else {
+    navbar.classList.remove('scrolled');
+  }
+});
 
-    if (elementTop < windowHeight - 100) {
-      element.classList.add("active");
+
+// ===================== SMOOTH SCROLL =====================
+// Fungsi: membuat perpindahan halaman terasa halus saat link navbar diklik
+
+navLinks.forEach(function (link) {
+  link.addEventListener('click', function (e) {
+    var target = link.getAttribute('href'); // Ambil target link, misal "#hero"
+
+    // Hanya jalankan smooth scroll jika target adalah anchor (diawali #)
+    if (target && target.startsWith('#')) {
+      e.preventDefault(); // Batalkan perilaku default browser
+
+      var targetSection = document.querySelector(target);
+      if (targetSection) {
+        // Hitung posisi elemen target minus tinggi navbar
+        var offsetTop = targetSection.offsetTop - 70;
+        window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+      }
     }
   });
-}
+});
 
-window.addEventListener("scroll", revealOnScroll);
 
-revealOnScroll();
+// ===================== ANIMASI FADE-IN SAAT SCROLL =====================
+// Fungsi: elemen dengan class 'fade-in' akan muncul perlahan saat terlihat di layar
 
-// =========================
-// FALLBACK GAMBAR
-// =========================
+// Gunakan Intersection Observer – cara modern yang efisien
+var fadeElements = document.querySelectorAll('.fade-in');
 
-const images = document.querySelectorAll(".image-fallback");
+var observer = new IntersectionObserver(function (entries) {
+  entries.forEach(function (entry) {
+    if (entry.isIntersecting) {
+      // Tambahkan class 'visible' agar elemen muncul (lihat CSS)
+      entry.target.classList.add('visible');
+      // Hentikan observasi setelah animasi dijalankan (efisiensi)
+      observer.unobserve(entry.target);
+    }
+  });
+}, {
+  threshold: 0.12 // Animasi mulai saat 12% elemen terlihat
+});
 
-images.forEach(img => {
-  img.addEventListener("error", function () {
+// Daftarkan semua elemen fade-in untuk dipantau
+fadeElements.forEach(function (el) {
+  observer.observe(el);
+});
 
-    this.style.display = "none";
 
-    const fallback = document.createElement("div");
+// ===================== PENANGANAN GAMBAR GAGAL DIMUAT =====================
+// Fungsi: menampilkan teks pengganti jika gambar tidak bisa dimuat
 
-    fallback.classList.add("fallback-style");
+var allImages = document.querySelectorAll('img');
 
-    fallback.innerText = "Gambar belum ditambahkan";
+allImages.forEach(function (img) {
+  // Event 'error' terpanggil jika gambar gagal dimuat
+  img.addEventListener('error', function () {
+    // Ganti elemen gambar dengan div fallback sederhana
+    var fallback = document.createElement('div');
+    fallback.className = 'img-fallback';
+    fallback.innerHTML = '🖼️<br><small>Gambar belum ditambahkan</small>';
 
-    this.parentElement.appendChild(fallback);
+    if (img.parentElement) {
+      img.parentElement.replaceChild(fallback, img);
+    }
   });
 });
