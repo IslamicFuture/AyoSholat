@@ -1,455 +1,1555 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pusat Pembelajaran AyoSholat</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* =====================================================================
+       STYLE KHUSUS HALAMAN BELAJAR.HTML
+       Gaya ini melengkapi style.css utama dengan tata letak LMS
+    ===================================================================== */
 
-  <link rel="stylesheet" href="style.css">
+    /* --- Reset tambahan untuk halaman belajar --- */
+    body { background: #F0F4F8; }
+
+    /* ===================== HEADER HALAMAN BELAJAR ===================== */
+    .belajar-header {
+      background: linear-gradient(135deg, var(--clr-primary) 0%, #0D4F9A 100%);
+      color: white;
+      padding: 18px 0;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      box-shadow: 0 2px 16px rgba(26,115,199,0.3);
+    }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .header-logo { font-size: 1.2rem; font-weight: 800; color: white; }
+    .header-logo span { opacity: 0.8; font-weight: 400; font-size: 0.9rem; margin-left: 8px; }
+    .back-btn {
+      padding: 8px 18px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 50px;
+      color: white;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: background 0.3s;
+      border: 1px solid rgba(255,255,255,0.3);
+    }
+    .back-btn:hover { background: rgba(255,255,255,0.35); }
+
+    /* ===================== DESKRIPSI SINGKAT ===================== */
+    .intro-bar {
+      background: white;
+      border-bottom: 1px solid #DDE8F3;
+      padding: 20px 0;
+    }
+    .intro-bar p {
+      font-size: 0.95rem;
+      color: var(--clr-text-light);
+      max-width: 800px;
+    }
+
+    /* ===================== LAYOUT UTAMA LMS ===================== */
+    .lms-layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 0;
+      min-height: calc(100vh - 120px);
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* ===================== SIDEBAR ===================== */
+    .sidebar {
+      background: white;
+      border-right: 1px solid #DDE8F3;
+      padding: 24px 0;
+      position: sticky;
+      top: 65px;
+      height: calc(100vh - 65px);
+      overflow-y: auto;
+    }
+    .sidebar-title {
+      padding: 0 20px 16px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--clr-text-light);
+      border-bottom: 1px solid #EEF3F9;
+      margin-bottom: 8px;
+    }
+
+    /* Tombol Bab */
+    .bab-btn {
+      width: 100%;
+      text-align: left;
+      padding: 12px 20px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--clr-navy);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background 0.2s;
+    }
+    .bab-btn:hover { background: #F0F6FF; }
+    .bab-btn.aktif { background: #EBF3FF; color: var(--clr-primary); }
+    .bab-btn .arrow { font-size: 0.7rem; transition: transform 0.3s; }
+    .bab-btn.aktif .arrow { transform: rotate(90deg); }
+
+    /* Subbab dalam sidebar */
+    .subbab-list {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease;
+    }
+    .subbab-list.terbuka { max-height: 500px; }
+    .subbab-btn {
+      width: 100%;
+      text-align: left;
+      padding: 9px 20px 9px 34px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 0.83rem;
+      color: var(--clr-text-light);
+      transition: color 0.2s, background 0.2s;
+    }
+    .subbab-btn:hover { color: var(--clr-primary); background: #F5F9FF; }
+    .subbab-btn.aktif { color: var(--clr-primary); font-weight: 600; background: #EBF3FF; }
+
+    /* Tombol collapse sidebar di mobile */
+    .sidebar-toggle {
+      display: none;
+      width: 100%;
+      padding: 12px 20px;
+      background: var(--clr-primary);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-align: left;
+    }
+
+    /* ===================== AREA KONTEN UTAMA ===================== */
+    .konten-area {
+      padding: 36px 40px;
+      background: #F0F4F8;
+    }
+
+    /* Bread crumb navigasi */
+    .breadcrumb {
+      font-size: 0.82rem;
+      color: var(--clr-text-light);
+      margin-bottom: 20px;
+    }
+    .breadcrumb span { color: var(--clr-primary); font-weight: 600; }
+
+    /* ===================== KONTEN MATERI ===================== */
+    /* Setiap section materi */
+    .materi-section {
+      display: none; /* Tersembunyi secara default */
+    }
+    .materi-section.aktif {
+      display: block; /* Tampil saat dipilih */
+      animation: fadeSlide 0.4s ease;
+    }
+
+    @keyframes fadeSlide {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Judul materi */
+    .materi-judul {
+      font-size: 1.7rem;
+      font-weight: 800;
+      color: var(--clr-navy);
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+    .materi-subjudul {
+      font-size: 0.85rem;
+      color: var(--clr-primary);
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+    .divider {
+      height: 3px;
+      background: linear-gradient(to right, var(--clr-primary), transparent);
+      border-radius: 2px;
+      margin-bottom: 28px;
+    }
+
+    /* Kotak Ringkasan Bab */
+    .ringkasan-box {
+      background: linear-gradient(135deg, #EBF3FF 0%, #D9EAF8 100%);
+      border-left: 4px solid var(--clr-primary);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      margin-bottom: 32px;
+    }
+    .ringkasan-box .label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--clr-primary);
+      margin-bottom: 8px;
+    }
+    .ringkasan-box p { font-size: 0.95rem; color: var(--clr-text-main); line-height: 1.7; }
+
+    /* Judul sub-sub bab */
+    .konten-h2 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--clr-navy);
+      margin: 32px 0 14px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #DDE8F3;
+    }
+    .konten-h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--clr-primary);
+      margin: 22px 0 10px;
+    }
+    .konten-h4 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--clr-navy);
+      margin: 16px 0 8px;
+    }
+
+    /* Paragraf */
+    .konten-area p { color: var(--clr-text-main); font-size: 0.95rem; line-height: 1.8; margin-bottom: 14px; }
+
+    /* Highlight kutipan ayat / hadits */
+    .ayat-box {
+      background: white;
+      border: 1px solid #DDE8F3;
+      border-radius: var(--radius);
+      padding: 18px 22px;
+      margin: 18px 0;
+      box-shadow: var(--shadow);
+    }
+    .ayat-arab {
+      font-size: 1.5rem;
+      text-align: right;
+      line-height: 2.2;
+      color: var(--clr-navy);
+      margin-bottom: 8px;
+      font-family: 'Times New Roman', serif;
+      direction: rtl;
+    }
+    .ayat-latin {
+      font-style: italic;
+      color: var(--clr-primary);
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+    }
+    .ayat-arti { color: var(--clr-text-light); font-size: 0.9rem; }
+    .ayat-sumber {
+      font-size: 0.8rem;
+      color: var(--clr-text-light);
+      margin-top: 8px;
+      font-weight: 600;
+    }
+
+    /* List */
+    .konten-list { padding-left: 20px; margin-bottom: 16px; }
+    .konten-list li { color: var(--clr-text-main); font-size: 0.95rem; line-height: 1.8; margin-bottom: 6px; }
+
+    /* Tabel */
+    .tabel-wrapper { overflow-x: auto; margin: 20px 0; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+    th {
+      background: var(--clr-primary);
+      color: white;
+      padding: 12px 16px;
+      text-align: left;
+      font-weight: 600;
+    }
+    td { padding: 10px 16px; border-bottom: 1px solid #DDE8F3; color: var(--clr-text-main); }
+    tr:nth-child(even) td { background: #F5F8FC; }
+    tr:hover td { background: #EBF3FF; }
+
+    /* Gambar materi */
+    .gambar-materi {
+      width: 100%;
+      max-width: 600px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin: 20px auto;
+      display: block;
+      object-fit: cover;
+    }
+    .gambar-caption {
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--clr-text-light);
+      margin-top: 8px;
+      font-style: italic;
+    }
+
+    /* Embed video / iframe */
+    .video-wrapper {
+      position: relative;
+      padding-bottom: 56.25%; /* Rasio 16:9 */
+      height: 0;
+      overflow: hidden;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin: 20px 0;
+      background: #000;
+    }
+    .video-wrapper iframe {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      border: none;
+    }
+
+    /* Kotak Embed Game/Kuis */
+    .embed-wrapper {
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      margin: 20px 0;
+    }
+    .embed-wrapper iframe { display: block; border: none; }
+
+    /* Card Info / Fakta Menarik */
+    .info-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      margin: 20px 0;
+      box-shadow: var(--shadow);
+      border-left: 4px solid #22C55E;
+    }
+    .info-card.warning { border-left-color: #F59E0B; }
+    .info-card.info    { border-left-color: var(--clr-primary); }
+    .info-card .label  { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #22C55E; margin-bottom: 8px; }
+    .info-card.warning .label { color: #F59E0B; }
+    .info-card.info .label    { color: var(--clr-primary); }
+    .info-card p { margin: 0; font-size: 0.93rem; color: var(--clr-text-main); }
+
+    /* Tombol Sumber / Link */
+    .sumber-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 28px 0 8px;
+      padding-top: 20px;
+      border-top: 1px solid #DDE8F3;
+    }
+    .sumber-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      background: white;
+      border: 1.5px solid var(--clr-primary);
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--clr-primary);
+      transition: background 0.2s, color 0.2s;
+    }
+    .sumber-btn:hover { background: var(--clr-primary); color: white; }
+
+    /* Tombol Navigasi Materi */
+    .nav-materi {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 40px;
+      padding-top: 24px;
+      border-top: 1px solid #DDE8F3;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .nav-materi-btn {
+      padding: 12px 22px;
+      border-radius: 50px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1.5px solid var(--clr-primary);
+      color: var(--clr-primary);
+      background: white;
+      transition: background 0.2s, color 0.2s;
+    }
+    .nav-materi-btn:hover { background: var(--clr-primary); color: white; }
+    .nav-materi-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* Progress Bar */
+    .progress-bar-wrapper {
+      background: #DDE8F3;
+      border-radius: 50px;
+      height: 6px;
+      margin: 0 20px 20px;
+    }
+    .progress-bar {
+      background: var(--clr-primary);
+      height: 100%;
+      border-radius: 50px;
+      transition: width 0.4s ease;
+    }
+
+    /* Pesan selamat datang (konten awal) */
+    .welcome-card {
+      background: white;
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+    .welcome-card .icon { font-size: 4rem; margin-bottom: 16px; }
+    .welcome-card h2 { font-size: 1.5rem; color: var(--clr-navy); margin-bottom: 12px; }
+    .welcome-card p  { color: var(--clr-text-light); max-width: 480px; margin: 0 auto 24px; }
+
+    /* ===================== RESPONSIVE MOBILE ===================== */
+    @media (max-width: 768px) {
+      .lms-layout {
+        grid-template-columns: 1fr;
+        max-width: 100%;
+      }
+      .sidebar {
+        position: static;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid #DDE8F3;
+        padding: 0;
+      }
+      .sidebar-toggle { display: block; }
+      .sidebar-inner { display: none; }
+      .sidebar-inner.terbuka { display: block; }
+      .konten-area { padding: 24px 20px; }
+      .materi-judul { font-size: 1.3rem; }
+    }
+  </style>
 </head>
-
 <body>
 
-  <!-- =========================
-       NAVBAR
-  ========================== -->
-
-  <header class="navbar">
-    <div class="container nav-container">
-
-      <h1 class="logo">AyoSholat LMS</h1>
-
-      <nav class="nav-menu active">
-        <a href="index.html">Kembali</a>
-      </nav>
-
+  <!-- ===================== HEADER ===================== -->
+  <header class="belajar-header">
+    <div class="container header-inner">
+      <div class="header-logo">
+        🕌 AyoSholat
+        <span>| Pusat Pembelajaran</span>
+      </div>
+      <a href="index.html" class="back-btn">← Kembali ke Beranda</a>
     </div>
   </header>
 
-  <!-- =========================
-       HEADER PEMBELAJARAN
-  ========================== -->
-
-  <section class="section">
+  <!-- ===================== INTRO ===================== -->
+  <div class="intro-bar">
     <div class="container">
-
-      <div class="section-title">
-        <h2>Pusat Pembelajaran AyoSholat</h2>
-
-        <p>
-          AyoSholat merupakan media pembelajaran interaktif berbasis web
-          yang membantu siswa memahami materi salat dan zikir secara
-          mudah, menarik, dan terstruktur.
-        </p>
-      </div>
-
-      <!-- =========================
-           LAYOUT LMS
-      ========================== -->
-
-      <div class="learning-layout">
-
-        <!-- =========================
-             SIDEBAR
-        ========================== -->
-
-        <aside class="sidebar">
-
-          <h3>Daftar Materi</h3>
-
-          <ul>
-
-            <li>
-              <a href="#bab1">
-                BAB I - Makna Sholat & Zikir
-              </a>
-            </li>
-
-            <li>
-              <a href="#bab2">
-                BAB II - Salat Mencegah Keji & Munkar
-              </a>
-            </li>
-
-            <li>
-              <a href="#bab3">
-                BAB III - Istikamah Salat & Zikir
-              </a>
-            </li>
-
-          </ul>
-
-        </aside>
-
-        <!-- =========================
-             KONTEN UTAMA
-        ========================== -->
-
-        <main class="content-area">
-
-          <!-- =========================
-               BAB 1
-          ========================== -->
-
-          <section id="bab1" class="material-section">
-
-            <h2>BAB I - Makna Sholat & Zikir</h2>
-
-            <img
-              src="https://i.ibb.co.com/sJHRD92t/Chat-GPT-Image-May-18-2026-07-02-16-PM.png"
-              alt="Foto aplikasi anak sedang menggunakan AyoSholat"
-              class="image-fallback"
-            >
-
-            <div class="material-card">
-
-              <h3>A. Sholat</h3>
-
-              <h4>Pengertian Sholat</h4>
-
-              <p>
-                Secara bahasa, sholat berasal dari kata ṣalāh yang berarti doa.
-                Sholat juga bermakna hubungan antara manusia dengan Allah SWT.
-              </p>
-
-              <p>
-                Secara istilah, sholat adalah ibadah yang dimulai dengan
-                takbiratul ihram dan diakhiri dengan salam.
-              </p>
-
-              <h4>Kedudukan Sholat</h4>
-
-              <p>
-                Sholat merupakan rukun Islam kedua dan menjadi tiang agama.
-                Sholat diwajibkan langsung oleh Allah SWT kepada Nabi Muhammad SAW.
-              </p>
-
-              <h4>Syarat Wajib Sholat</h4>
-
-              <ul>
-                <li>Beragama Islam</li>
-                <li>Sudah baligh</li>
-                <li>Berakal sehat</li>
-                <li>Suci dari haid dan nifas</li>
-              </ul>
-
-              <h4>Rukun Sholat</h4>
-
-              <ul>
-                <li>Niat</li>
-                <li>Takbiratul Ihram</li>
-                <li>Membaca Al-Fatihah</li>
-                <li>Rukuk</li>
-                <li>Sujud</li>
-                <li>Tasyahud</li>
-                <li>Salam</li>
-              </ul>
-
-              <h4>Tujuan Sholat</h4>
-
-              <ul>
-                <li>Mengingat Allah SWT</li>
-                <li>Mencegah perbuatan keji dan munkar</li>
-                <li>Mendidik disiplin</li>
-                <li>Menyehatkan jiwa dan raga</li>
-              </ul>
-
-            </div>
-
-            <div class="material-card">
-
-              <h3>B. Zikir</h3>
-
-              <p>
-                Zikir berarti mengingat Allah SWT dengan lisan,
-                hati, maupun perbuatan.
-              </p>
-
-              <h4>Manfaat Zikir</h4>
-
-              <ul>
-                <li>Menenangkan hati</li>
-                <li>Mengurangi stres dan kecemasan</li>
-                <li>Mendekatkan diri kepada Allah</li>
-                <li>Menjaga kesehatan mental</li>
-              </ul>
-
-              <h4>Bentuk-Bentuk Zikir</h4>
-
-              <table class="material-table">
-
-                <tr>
-                  <th>Zikir</th>
-                  <th>Arti</th>
-                </tr>
-
-                <tr>
-                  <td>Subhanallah</td>
-                  <td>Maha Suci Allah</td>
-                </tr>
-
-                <tr>
-                  <td>Alhamdulillah</td>
-                  <td>Segala Puji Bagi Allah</td>
-                </tr>
-
-                <tr>
-                  <td>Allahu Akbar</td>
-                  <td>Allah Maha Besar</td>
-                </tr>
-
-              </table>
-
-            </div>
-
-            <!-- VIDEO -->
-
-            <div class="material-card">
-
-              <h3>Video Pembelajaran Sholat</h3>
-
-              <iframe
-                width="100%"
-                height="400"
-                src="https://www.youtube.com/embed/HT10SSG-8Qc"
-                title="Video Sholat"
-                frameborder="0"
-                allowfullscreen>
-              </iframe>
-
-            </div>
-
-            <div class="material-card">
-
-              <h3>Video Pembelajaran Zikir</h3>
-
-              <iframe
-                width="100%"
-                height="400"
-                src="https://www.youtube.com/embed/boIMqREAtrA"
-                title="Video Zikir"
-                frameborder="0"
-                allowfullscreen>
-              </iframe>
-
-            </div>
-
-            <!-- LINK -->
-
-            <div class="material-links">
-
-              <a href="https://forms.gle/HbRVZUt5TwM6SVdXA" target="_blank" class="btn primary-btn">
-                Kerjakan Kuis BAB I
-              </a>
-
-              <a href="https://online.fliphtml5.com/vnkhu/sholat-ebook/#p=1" target="_blank" class="btn secondary-btn">
-                Ebook Sholat
-              </a>
-
-              <a href="https://online.fliphtml5.com/vnkhu/Zikir-ebook/#p=6" target="_blank" class="btn secondary-btn">
-                Ebook Zikir
-              </a>
-
-              </a>
-
-            </div>
-
-          </section>
-
-          <!-- =========================
-               BAB 2
-          ========================== -->
-
-          <section id="bab2" class="material-section">
-
-            <h2>BAB II - Salat Mencegah Keji & Munkar</h2>
-
-            <div class="material-card">
-
-              <h3>Pengertian Keji dan Munkar</h3>
-
-              <p>
-                Fahsya’ adalah perbuatan buruk yang melampaui batas moral.
-                Sedangkan munkar adalah segala perbuatan yang dilarang agama.
-              </p>
-
-              <h4>Contoh Perbuatan Keji</h4>
-
-              <ul>
-                <li>Berkata kotor</li>
-                <li>Menonton pornografi</li>
-                <li>Zina</li>
-              </ul>
-
-              <h4>Contoh Perbuatan Munkar</h4>
-
-              <ul>
-                <li>Mencuri</li>
-                <li>Berjudi</li>
-                <li>Berbohong</li>
-              </ul>
-
-            </div>
-
-            <div class="material-card">
-
-              <h3>Hubungan Sholat dengan Akhlak</h3>
-
-              <p>
-                Sholat melatih kedisiplinan, kesabaran,
-                kebersihan, dan kejujuran.
-              </p>
-
-              <p>
-                Orang yang menjaga sholat akan lebih mudah
-                menjaga perilaku dan akhlaknya.
-              </p>
-
-            </div>
-
-            <div class="material-card">
-
-              <h3>Dampak Positif Sholat</h3>
-
-              <ul>
-                <li>Menenangkan hati</li>
-                <li>Membentuk karakter baik</li>
-                <li>Meningkatkan kedisiplinan</li>
-                <li>Menjaga hubungan sosial</li>
-              </ul>
-
-            </div>
-
-            <!-- VIDEO -->
-
-            <div class="material-card">
-
-              <h3>Video Pembelajaran BAB II</h3>
-
-              <iframe
-                width="100%"
-                height="400"
-                src="https://www.youtube.com/embed/JAo9BhsXdME"
-                title="Video BAB II"
-                frameborder="0"
-                allowfullscreen>
-              </iframe>
-
-            </div>
-
-            <!-- LINK -->
-
-            <div class="material-links">
-
-              <a href="https://forms.gle/22GYkzmfXnD5PTRb7" target="_blank" class="btn primary-btn">
-                Kerjakan Kuis BAB II
-              </a>
-
-              <a href="https://online.fliphtml5.com/vnkhu/materi-2/#p=1" target="_blank" class="btn secondary-btn">
-                Ebook BAB II
-              </a>
-
-            </div>
-
-          </section>
-
-          <!-- =========================
-               BAB 3
-          ========================== -->
-
-          <section id="bab3" class="material-section">
-
-            <h2>BAB III - Istikamah Salat dan Zikir</h2>
-
-            <div class="material-card">
-
-              <h3>Pentingnya Salat Lima Waktu</h3>
-
-              <p>
-                Salat lima waktu adalah kewajiban utama
-                setiap Muslim yang telah baligh.
-              </p>
-
-              <h4>Nama Salat Wajib</h4>
-
-              <ul>
-                <li>Subuh</li>
-                <li>Dzuhur</li>
-                <li>Ashar</li>
-                <li>Maghrib</li>
-                <li>Isya</li>
-              </ul>
-
-            </div>
-
-            <div class="material-card">
-
-              <h3>Cara Istikamah</h3>
-
-              <ul>
-                <li>Memperkuat niat</li>
-                <li>Membuat jadwal ibadah</li>
-                <li>Memasang alarm salat</li>
-                <li>Mencari lingkungan baik</li>
-                <li>Rutin muhasabah diri</li>
-              </ul>
-
-            </div>
-
-            <div class="material-card">
-
-              <h3>Contoh Penerapan Istikamah</h3>
-
-              <p>
-                Membiasakan salat tepat waktu,
-                membaca doa sebelum belajar,
-                dan berzikir setiap hari.
-              </p>
-
-            </div>
-
-            <!-- VIDEO -->
-
-            <div class="material-card">
-
-              <h3>Video Pembelajaran BAB III</h3>
-
-              <iframe
-                width="100%"
-                height="400"
-                src="https://www.youtube.com/embed/KI_vv_N24IA"
-                title="Video BAB III"
-                frameborder="0"
-                allowfullscreen>
-              </iframe>
-
-            </div>
-
-            <!-- LINK -->
-
-            <div class="material-links">
-
-              <a href="https://forms.gle/KAvgRvuUi44yFCYF8" target="_blank" class="btn primary-btn">
-                Kerjakan Kuis BAB III
-              </a>
-
-              <a href="https://online.fliphtml5.com/izaek/materi-3/" target="_blank" class="btn secondary-btn">
-                Ebook BAB III
-              </a>
-
-            </div>
-
-          </section>
-
-        </main>
-
-      </div>
-
+      <p>
+        <strong>AyoSholat</strong> – Media pembelajaran interaktif berbasis web yang membantu
+        siswa memahami materi salat dan zikir secara mudah, menarik, dan terstruktur. Pilih
+        bab di sebelah kiri untuk mulai belajar.
+      </p>
     </div>
-  </section>
+  </div>
 
+  <!-- ===================== LAYOUT LMS ===================== -->
+  <div style="max-width:1200px; margin:0 auto; background:white; box-shadow: 0 0 40px rgba(0,0,0,0.06);">
+  <div class="lms-layout">
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar" id="sidebar">
+
+      <!-- Tombol collapse di mobile -->
+      <button class="sidebar-toggle" id="sidebar-toggle" onclick="toggleSidebar()">
+        📚 Daftar Materi ▾
+      </button>
+
+      <div class="sidebar-inner" id="sidebar-inner">
+        <div class="sidebar-title">Daftar Bab</div>
+
+        <!-- Progress Bar -->
+        <div class="progress-bar-wrapper">
+          <div class="progress-bar" id="progress-bar" style="width:0%"></div>
+        </div>
+
+        <!-- BAB 1 -->
+        <button class="bab-btn" onclick="toggleBab('bab1')" id="btn-bab1">
+          <span>📖 Bab 1 – Makna Sholat &amp; Zikir</span>
+          <span class="arrow" id="arrow-bab1">▶</span>
+        </button>
+        <div class="subbab-list" id="bab1">
+          <button class="subbab-btn" onclick="tampilMateri('bab1-intro')">📌 Ringkasan Bab 1</button>
+          <button class="subbab-btn" onclick="tampilMateri('bab1-sub1')">1.1 Pengertian &amp; Kedudukan Sholat</button>
+          <button class="subbab-btn" onclick="tampilMateri('bab1-sub2')">1.2 Dalil, Rukun &amp; Keutamaan Sholat</button>
+          <button class="subbab-btn" onclick="tampilMateri('bab1-sub3')">1.3 Pengertian, Bentuk &amp; Manfaat Zikir</button>
+        </div>
+
+        <!-- BAB 2 -->
+        <button class="bab-btn" onclick="toggleBab('bab2')" id="btn-bab2">
+          <span>🛡️ Bab 2 – Salat Mencegah Keji &amp; Munkar</span>
+          <span class="arrow" id="arrow-bab2">▶</span>
+        </button>
+        <div class="subbab-list" id="bab2">
+          <button class="subbab-btn" onclick="tampilMateri('bab2-intro')">📌 Ringkasan Bab 2</button>
+          <button class="subbab-btn" onclick="tampilMateri('bab2-sub1')">2.1 Pengertian Keji &amp; Munkar + Dalil</button>
+          <button class="subbab-btn" onclick="tampilMateri('bab2-sub2')">2.2 Hubungan Salat dengan Akhlak</button>
+          <button class="subbab-btn" onclick="tampilMateri('bab2-sub3')">2.3 Dampak Salat dalam Kehidupan</button>
+        </div>
+
+        <!-- BAB 3 -->
+        <button class="bab-btn" onclick="toggleBab('bab3')" id="btn-bab3">
+          <span>⭐ Bab 3 – Istikamah Salat &amp; Zikir</span>
+          <span class="arrow" id="arrow-bab3">▶</span>
+        </button>
+        <div class="subbab-list" id="bab3">
+          <button class="subbab-btn" onclick="tampilMateri('bab3-intro')">📌 Ringkasan Bab 3</button>
+          <button class="subbab-btn" onclick="tampilMateri('bab3-sub1')">3.1 Pentingnya Salat Lima Waktu</button>
+          <button class="subbab-btn" onclick="tampilMateri('bab3-sub2')">3.2 Hikmah Salat &amp; Zikir</button>
+          <button class="subbab-btn" onclick="tampilMateri('bab3-sub3')">3.3 Cara Istikamah &amp; Penerapannya</button>
+        </div>
+
+      </div><!-- /sidebar-inner -->
+    </aside>
+
+    <!-- ===== AREA KONTEN ===== -->
+    <main class="konten-area" id="konten-area">
+
+      <!-- Breadcrumb -->
+      <div class="breadcrumb" id="breadcrumb">
+        🏠 Beranda › <span id="breadcrumb-text">Pilih materi</span>
+      </div>
+
+      <!-- =====================================================================
+           HALAMAN SELAMAT DATANG (default)
+      ===================================================================== -->
+      <div class="materi-section aktif" id="welcome">
+        <div class="welcome-card">
+          <div class="icon">🕌</div>
+          <h2>Selamat Datang di AyoSholat!</h2>
+          <p>
+            Silakan pilih bab dan subbab di panel sebelah kiri untuk memulai pembelajaran.
+            Tersedia materi lengkap tentang makna salat, zikir, dan cara istikamah dalam
+            ibadah sehari-hari.
+          </p>
+          <button class="btn btn-primary" onclick="tampilMateri('bab1-intro')">
+            Mulai dari Bab 1 →
+          </button>
+        </div>
+      </div>
+
+      <!-- =====================================================================
+           BAB 1 – RINGKASAN
+      ===================================================================== -->
+      <div class="materi-section" id="bab1-intro">
+        <p class="materi-subjudul">BAB 1 – Makna Sholat &amp; Zikir</p>
+        <h1 class="materi-judul">Ringkasan Bab 1</h1>
+        <div class="divider"></div>
+
+        <div class="ringkasan-box">
+          <div class="label">📋 Ringkasan</div>
+          <p>
+            Bab ini membahas tentang makna salat dan zikir dalam kehidupan seorang Muslim.
+            Salat merupakan ibadah wajib yang menjadi tiang agama serta sarana mendekatkan
+            diri kepada Allah SWT. Selain itu, salat juga memiliki tujuan untuk membentuk
+            kedisiplinan, ketenangan jiwa, dan mencegah perbuatan keji serta munkar. Zikir
+            adalah aktivitas mengingat Allah melalui lisan, hati, dan perbuatan yang dapat
+            memberikan ketenangan batin serta meningkatkan kualitas spiritual seseorang.
+          </p>
+        </div>
+
+        <img
+          src="https://i.ibb.co.com/sJHRD92t/Chat-GPT-Image-May-18-2026-07-02-16-PM.png"
+          alt="Foto aplikasi anak sedang menggunakan AyoSholat"
+          class="gambar-materi"
+          onerror="this.style.display='none'"
+        />
+        <p class="gambar-caption">Ilustrasi pembelajaran salat dan zikir</p>
+
+        <div class="nav-materi">
+          <button class="nav-materi-btn" disabled>← Sebelumnya</button>
+          <button class="nav-materi-btn" onclick="tampilMateri('bab1-sub1')">Selanjutnya: 1.1 Pengertian Sholat →</button>
+        </div>
+      </div>
+
+      <!-- =====================================================================
+           BAB 1 – SUBBAB 1.1 – PENGERTIAN & KEDUDUKAN SHOLAT
+      ===================================================================== -->
+      <div class="materi-section" id="bab1-sub1">
+        <p class="materi-subjudul">BAB 1 › Subbab 1.1</p>
+        <h1 class="materi-judul">Pengertian dan Kedudukan Sholat</h1>
+        <div class="divider"></div>
+
+        <h2 class="konten-h2">A. Pengertian Sholat</h2>
+
+        <h3 class="konten-h3">1. Pengertian Sholat Secara Bahasa (Etimologi)</h3>
+        <p>
+          Secara bahasa, kata <strong>"sholat"</strong> berasal dari bahasa Arab <em>ṣalāh</em>
+          yang berarti <strong>doa</strong>. Ada pula kalangan pakar bahasa yang berpandangan
+          bahwa al-Ṣalāh diambil dari kata <em>al-Ṣilāh</em> yang berarti
+          <strong>hubungan</strong> – karena dengan mendirikan sholat, roh seorang mukmin
+          sedang berhubungan langsung dengan Sang Pencipta.
+        </p>
+        <div class="info-card info">
+          <div class="label">💡 Kesimpulan Sederhana</div>
+          <p><strong>Sholat = berdoa + menjalin hubungan dengan Allah Swt.</strong></p>
+        </div>
+
+        <h3 class="konten-h3">2. Pengertian Sholat Secara Istilah (Terminologi)</h3>
+        <p>
+          Sholat adalah ibadah yang dilakukan dengan niat tertentu, dimulai dari
+          <strong>takbiratul ihram</strong> dan diakhiri dengan <strong>salam</strong>,
+          sebagai wujud pengabdian dan ketergantungan hamba kepada Allah Swt.
+        </p>
+        <p>
+          Kajian hadis menunjukkan bahwa sholat tidak hanya memberikan kerangka normatif
+          keabsahan secara hukum, tetapi juga mengarahkan pada pemaknaan sholat sebagai
+          ibadah yang bersifat spiritual dan transformatif – bertujuan membentuk kesadaran
+          moral dan kualitas penghambaan seorang muslim.
+        </p>
+
+        <h2 class="konten-h2">B. Kedudukan Sholat dalam Islam</h2>
+        <p>
+          Sholat memiliki kedudukan yang sangat mulia dan merupakan bagian
+          <strong>rukun Islam kedua</strong> setelah syahadat. Sholat hukumnya
+          <strong>wajib (fardhu)</strong> dan menjadi salah satu tiang utama agama Islam,
+          karena diperintahkan langsung dari Allah Swt. kepada Nabi Muhammad Saw. dalam
+          peristiwa <strong>Isra' dan Mi'raj</strong>.
+        </p>
+
+        <div class="ayat-box">
+          <div class="ayat-latin">Hadits Riwayat Thabrani:</div>
+          <p style="font-style:italic; color:#1A2B4A; margin-bottom:8px;">
+            "Amal seseorang yang dihisab pertama kali pada hari kiamat adalah sholat. Jika
+            sholatnya baik, maka baiklah semua amalannya; dan jika sholatnya rusak, maka
+            jeleklah semua amalnya."
+          </p>
+          <div class="ayat-sumber">(HR. Thabrani)</div>
+        </div>
+
+        <h2 class="konten-h2">C. Syarat Wajib Sholat</h2>
+        <p>Sholat wajib dilakukan oleh setiap muslim yang memenuhi syarat berikut:</p>
+        <ul class="konten-list">
+          <li>✅ Beragama Islam</li>
+          <li>✅ Sudah baligh (dewasa)</li>
+          <li>✅ Berakal sehat</li>
+          <li>✅ Tidak sedang haid atau nifas (bagi perempuan)</li>
+        </ul>
+
+        <h2 class="konten-h2">D. Tujuan Sholat</h2>
+
+        <h4 class="konten-h4">1. Mengingat Allah Swt. (Dzikrullah)</h4>
+        <div class="ayat-box">
+          <div class="ayat-arab">إِنَّنِي أَنَا اللّٰهُ لَا إِلٰهَ إِلَّا أَنَا فَاعْبُدْنِي وَأَقِمِ الصَّلَاةَ لِذِكْرِي</div>
+          <div class="ayat-latin">Innananī anallāhu lā ilāha illā ana fa'budnī wa aqimish shalāta lidzikrī</div>
+          <div class="ayat-arti">"…dan dirikanlah sholat untuk mengingat Aku."</div>
+          <div class="ayat-sumber">Q.S. Thaha: 14</div>
+        </div>
+
+        <h4 class="konten-h4">2. Mencegah Perbuatan Keji dan Mungkar</h4>
+        <div class="ayat-box">
+          <div class="ayat-arab">إِنَّ الصَّلَاةَ تَنْهَىٰ عَنِ الْفَحْشَاءِ وَالْمُنكَرِ</div>
+          <div class="ayat-latin">Innash shalāta tanhā 'anil fahsyā'i wal munkar</div>
+          <div class="ayat-arti">"Sesungguhnya sholat itu mencegah dari perbuatan keji dan mungkar."</div>
+          <div class="ayat-sumber">Q.S. Al-Ankabut: 45</div>
+        </div>
+
+        <h4 class="konten-h4">3. Mendidik Disiplin dan Tanggung Jawab</h4>
+        <p>Sholat berjamaah terbukti tidak hanya berfungsi sebagai ibadah ritual, tetapi juga sebagai media pembinaan karakter yang efektif – di dalamnya terkandung nilai kebersamaan, ketertiban, kepemimpinan, dan kepatuhan terhadap aturan.</p>
+        <div class="info-card">
+          <div class="label">✨ Fakta Menarik</div>
+          <p>Anak yang rajin sholat tepat waktu secara otomatis melatih dirinya untuk <strong>disiplin, tidak terlambat, dan bertanggung jawab!</strong></p>
+        </div>
+
+        <h4 class="konten-h4">4. Menyehatkan Jiwa dan Raga</h4>
+        <p>Beberapa penelitian ilmiah menunjukkan bahwa gerakan sholat yang ritmis, teratur, dan disertai kekhusyukan mampu memberikan ketenangan batin, mengurangi kecemasan, serta meningkatkan konsentrasi.</p>
+
+        <!-- Video -->
+        <h2 class="konten-h2">🎬 Video Pembelajaran</h2>
+        <div class="video-wrapper">
+          <iframe
+            src="https://www.youtube.com/embed/HT10SSG-8Qc"
+            title="Video Pembelajaran Sholat"
+            allowfullscreen
+            loading="lazy">
+          </iframe>
+        </div>
+
+        <!-- Sumber -->
+        <div class="sumber-row">
+          <a href="https://online.fliphtml5.com/vnkhu/sholat-ebook/#p=1" target="_blank" class="sumber-btn">📚 Ebook Sholat</a>
+          <a href="https://forms.gle/HbRVZUt5TwM6SVdXA" target="_blank" class="sumber-btn">📝 Kuis Sholat &amp; Zikir</a>
+        </div>
+
+        <div class="nav-materi">
+          <button class="nav-materi-btn" onclick="tampilMateri('bab1-intro')">← Ringkasan Bab 1</button>
+          <button class="nav-materi-btn" onclick="tampilMateri('bab1-sub2')">Selanjutnya: 1.2 Dalil &amp; Keutamaan →</button>
+        </div>
+      </div>
+
+      <!-- =====================================================================
+           BAB 1 – SUBBAB 1.2 – DALIL, RUKUN & KEUTAMAAN SHOLAT
+      ===================================================================== -->
+      <div class="materi-section" id="bab1-sub2">
+        <p class="materi-subjudul">BAB 1 › Subbab 1.2</p>
+        <h1 class="materi-judul">Dalil, Rukun, dan Keutamaan Sholat</h1>
+        <div class="divider"></div>
+
+        <h2 class="konten-h2">A. Dalil-dalil Sholat</h2>
+
+        <h3 class="konten-h3">1. Dalil dari Al-Qur'an</h3>
+        <div class="tabel-wrapper">
+          <table>
+            <thead><tr><th>No</th><th>Surat &amp; Ayat</th><th>Isi Pokok</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>Q.S. Al-Baqarah: 43</td><td>Perintah mendirikan sholat dan zakat</td></tr>
+              <tr><td>2</td><td>Q.S. Al-Baqarah: 238</td><td>Perintah memelihara sholat dengan khusyuk</td></tr>
+              <tr><td>3</td><td>Q.S. Thaha: 14</td><td>Sholat sebagai sarana mengingat Allah</td></tr>
+              <tr><td>4</td><td>Q.S. Al-Ankabut: 45</td><td>Sholat mencegah fahsya' dan munkar</td></tr>
+              <tr><td>5</td><td>Q.S. Al-Baqarah: 45</td><td>Sholat sebagai penolong bersama sabar</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Penyebutan kata sholat dalam Al-Qur'an tercatat lebih dari <strong>85 kali</strong>, menunjukkan betapa pentingnya ibadah ini dalam Islam.</p>
+
+        <h3 class="konten-h3">2. Dalil dari Hadits</h3>
+        <div class="ayat-box">
+          <div class="ayat-arab">اَلصَّلَاةُ عِمَادُ الدِّيْنِ</div>
+          <div class="ayat-latin">Ash-shalatu 'imādud dīn, faman aqāmahā faqad aqāmad dīn, wa man hadamahā faqad hadamad dīn.</div>
+          <div class="ayat-arti">"Sholat adalah tiang agama. Barang siapa mendirikannya, ia telah menegakkan agama. Barang siapa meninggalkannya, ia telah meruntuhkan agama."</div>
+          <div class="ayat-sumber">(HR. Baihaqi)</div>
+        </div>
+        <div class="ayat-box">
+          <div class="ayat-latin">Awwalu mā yuhāsabu bihil 'abdu yaumal qiyāmati ash-shalāh.</div>
+          <div class="ayat-arti">"Amal pertama yang dihisab pada hari kiamat adalah sholat."</div>
+          <div class="ayat-sumber">(HR. at-Tirmidzi)</div>
+        </div>
+
+        <h2 class="konten-h2">B. Rukun Sholat</h2>
+        <p>Rukun sholat adalah elemen-elemen esensial yang harus dipenuhi agar sholat sah menurut syariat Islam. Jika salah satu rukun ditinggalkan, sholat dianggap batal dan harus diulang.</p>
+        <p>Rukun sholat menurut mazhab Syafi'i:</p>
+        <ul class="konten-list">
+          <li>1. Niat</li>
+          <li>2. Takbiratul ihram</li>
+          <li>3. Berdiri (bagi yang mampu)</li>
+          <li>4. Membaca Al-Fatihah</li>
+          <li>5. Rukuk</li>
+          <li>6. I'tidal</li>
+          <li>7. Sujud (dua kali)</li>
+          <li>8. Duduk di antara dua sujud</li>
+          <li>9. Tasyahhud akhir</li>
+          <li>10. Shalawat Nabi</li>
+          <li>11. Salam</li>
+        </ul>
+
+        <h2 class="konten-h2">C. Keutamaan Sholat</h2>
+
+        <h4 class="konten-h4">1. Tiang Agama Islam</h4>
+        <p>Sholat merupakan rukun Islam yang sangat wajib setelah kalimat syahadat. Sholat wajib dilaksanakan bagi setiap muslim dalam keadaan apapun – baik sakit, dalam perjalanan jauh, dan sebagainya.</p>
+
+        <h4 class="konten-h4">2. Amalan Pertama yang Dihisab</h4>
+        <div class="info-card info">
+          <div class="label">💡 Renungkan!</div>
+          <p>"Jika sholatnya baik, maka seluruh amalnya pun baik; dan jika sholatnya rusak, maka seluruh amalnya pun rusak." <em>(HR. at-Tirmidzi, no. 413)</em><br/><br/>Sholat adalah <strong>cermin kepribadian seorang Muslim</strong>. Kalau sholatnya bagus, insya Allah seluruh hidupnya juga lurus!</p>
+        </div>
+
+        <h4 class="konten-h4">3. Penolong di Waktu Sulit</h4>
+        <p>Dalam sebuah hadits riwayat Abu Dawud, disebutkan bahwa dahulu jika ada perkara yang menyusahkan Nabi ﷺ, beliau langsung mendirikan sholat. Jadi, kalau sedang stres atau banyak masalah – <strong>solusinya adalah sholat!</strong></p>
+
+        <h4 class="konten-h4">4. Pahala Berlipat Ganda saat Berjamaah</h4>
+        <p>Sholat berjamaah memiliki nilai pahala yang berlipat ganda (27 derajat) dibandingkan sholat sendiri. Selain itu, pelaksanaan sholat berjamaah memberikan pembelajaran praktis tentang kedisiplinan, ketepatan waktu, dan tanggung jawab sosial.</p>
+
+        <!-- Ebook embed -->
+        <h2 class="konten-h2">📚 Baca Ebook Sholat</h2>
+        <div class="embed-wrapper">
+          <iframe
+            src="https://online.fliphtml5.com/vnkhu/sholat-ebook/#p=1"
+            width="100%"
+            height="480"
+            title="Ebook Sholat"
+            loading="lazy">
+          </iframe>
+        </div>
+
+        <div class="sumber-row">
+          <a href="https://forms.gle/HbRVZUt5TwM6SVdXA" target="_blank" class="sumber-btn">📝 Kuis Sholat &amp; Zikir</a>
+        </div>
+
+        <div class="nav-materi">
+          <button class="nav-materi-btn" onclick="tampilMateri('bab1-sub1')">← 1.1 Pengertian Sholat</button>
+          <button class="nav-materi-btn" onclick="tampilMateri('bab1-sub3')">Selanjutnya: 1.3 Zikir →</button>
+        </div>
+      </div>
+
+      <!-- =====================================================================
+           BAB 1 – SUBBAB 1.3 – ZIKIR
+      ===================================================================== -->
+      <div class="materi-section" id="bab1-sub3">
+        <p class="materi-subjudul">BAB 1 › Subbab 1.3</p>
+        <h1 class="materi-judul">Pengertian, Bentuk, dan Manfaat Zikir</h1>
+        <div class="divider"></div>
+
+        <h2 class="konten-h2">A. Pengertian Zikir</h2>
+
+        <h3 class="konten-h3">1. Secara Bahasa (Etimologi)</h3>
+        <p>
+          Secara leksikal, kata zikir berasal dari bahasa Arab
+          <strong>ذَكَرَ – يَذْكُرُ – ذِكْرًا</strong> yang mengandung makna
+          menyebut, memperhatikan, mengenang, dan mengambil pelajaran.
+        </p>
+
+        <h3 class="konten-h3">2. Secara Istilah (Terminologi)</h3>
+        <p>
+          Secara terminologis, zikir adalah praktik spiritual dalam Islam dengan
+          melakukan pengulangan kata-kata atau kalimat-kalimat tertentu sebagai bentuk
+          pengingat dan persembahan kepada Allah Swt. untuk membersihkan dan menenangkan
+          hati serta menjaga kesadaran spiritual dalam setiap aktivitas sehari-hari.
+        </p>
+        <div class="info-card info">
+          <div class="label">💡 Intinya</div>
+          <p><strong>Zikir = mengingat Allah dengan lisan, hati, dan perbuatan.</strong></p>
+        </div>
+
+        <h2 class="konten-h2">B. Dalil Zikir</h2>
+        <div class="ayat-box">
+          <div class="ayat-arab">يَا أَيُّهَا الَّذِينَ آمَنُوا اذْكُرُوا اللَّهَ ذِكْرًا كَثِيرًا</div>
+          <div class="ayat-latin">Yā ayyuhal ladzīna āmanudzkurullāha dzikran katsīran wa sabbihūhu bukratan wa ashīlā</div>
+          <div class="ayat-arti">"Wahai orang-orang yang beriman! Ingatlah Allah dengan zikir sebanyak-banyaknya, dan bertasbihlah kepada-Nya pada waktu pagi dan petang."</div>
+          <div class="ayat-sumber">Q.S. Al-Ahzab: 41-42</div>
+        </div>
+        <div class="ayat-box">
+          <div class="ayat-arab">أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ</div>
+          <div class="ayat-latin">Alā bidzikrilllāhi tathma'innul qulūb</div>
+          <div class="ayat-arti">"Ingatlah, hanya dengan mengingat Allah hati menjadi tenteram."</div>
+          <div class="ayat-sumber">Q.S. Ar-Ra'd: 28</div>
+        </div>
+
+        <h2 class="konten-h2">C. Bentuk-bentuk Zikir</h2>
+        <div class="tabel-wrapper">
+          <table>
+            <thead><tr><th>No</th><th>Nama</th><th>Arab</th><th>Latin</th><th>Arti</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>Tasbih</td><td>سُبْحَانَ اللهِ</td><td>Subhānallāh</td><td>Maha Suci Allah</td></tr>
+              <tr><td>2</td><td>Tahmid</td><td>الْحَمْدُ لِلّٰهِ</td><td>Alhamdulillāh</td><td>Segala puji bagi Allah</td></tr>
+              <tr><td>3</td><td>Tahlil</td><td>لَا إِلٰهَ إِلَّا اللهُ</td><td>Lā ilāha illallāh</td><td>Tiada Tuhan selain Allah</td></tr>
+              <tr><td>4</td><td>Takbir</td><td>اللهُ أَكْبَرُ</td><td>Allāhu Akbar</td><td>Allah Maha Besar</td></tr>
+              <tr><td>5</td><td>Istighfar</td><td>أَسْتَغْفِرُ اللهَ</td><td>Astaghfirullāh</td><td>Aku mohon ampun kepada Allah</td></tr>
+              <tr><td>6</td><td>Hauqalah</td><td>لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللهِ</td><td>Lā hawla wa lā quwwata illā billāh</td><td>Tiada daya dan kekuatan kecuali dengan Allah</td></tr>
+              <tr><td>7</td><td>Basmalah</td><td>بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيمِ</td><td>Bismillāhir rahmānir rahīm</td><td>Dengan nama Allah Yang Maha Pengasih lagi Maha Penyayang</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 class="konten-h2">D. Manfaat Zikir</h2>
+        <h4 class="konten-h4">Manfaat Spiritual</h4>
+        <p>Apabila kita berzikir, maka secara tidak langsung kita akan mengingat Allah Swt., dan hal itu mendatangkan ketenangan dan ketenteraman batin. Zikir diyakini dapat memperbaiki akhlak dan perilaku seseorang.</p>
+        <h4 class="konten-h4">Manfaat Psikologis</h4>
+        <p>Zikir terbukti efektif dalam menurunkan tingkat kecemasan dan stres. Dari sisi psikologi, zikir mirip dengan meditasi <em>mindfulness</em> yang membantu seseorang fokus pada saat ini.</p>
+        <h4 class="konten-h4">Manfaat Fisik</h4>
+        <p>Pengulangan kata dalam zikir bisa memperlambat detak jantung dan menurunkan tekanan darah. Penelitian menunjukkan bahwa zikir teratur meningkatkan variabilitas detak jantung.</p>
+
+        <!-- Video Zikir -->
+        <h2 class="konten-h2">🎬 Video Pembelajaran Zikir</h2>
+        <div class="video-wrapper">
+          <iframe
+            src="https://www.youtube.com/embed/boIMqREAtrA"
+            title="Video Pembelajaran Zikir"
+            allowfullscreen
+            loading="lazy">
+          </iframe>
+        </div>
+
+        <!-- Ebook Zikir -->
+        <h2 class="konten-h2">📚 Baca Ebook Zikir</h2>
+        <div class="embed-wrapper">
+          <iframe
+            src="https://online.fliphtml5.com/vnkhu/Zikir-ebook/#p=6"
+            width="100%"
+            height="480"
+            title="Ebook Zikir"
+            loading="lazy">
+          </iframe>
+        </div>
+
+        <div class="sumber-row">
+          <a href="https://forms.gle/HbRVZUt5TwM6SVdXA" target="_blank" class="sumber-btn">📝 Kuis Sholat &amp; Zikir</a>
+        </div>
+
+        <div class="nav-materi">
+          <button class="nav-materi-btn" onclick="tampilMateri('bab1-sub2')">← 1.2 Dalil &amp; Keutamaan</button>
+          <button class="nav-materi-btn" onclick="tampilMateri('bab2-intro')">Selanjutnya: Bab 2 →</button>
+        </div>
+      </div>
+
+      <!-- =====================================================================
+           BAB 2 – RINGKASAN
+      ===================================================================== -->
+      <div class="materi-section" id="bab2-intro">
+        <p class="materi-subjudul">BAB 2 – Salat Mencegah Keji &amp; Munkar</p>
+        <h1 class="materi-judul">Ringkasan Bab 2</h1>
+        <div class="divider"></div>
+
+        <div class="ringkasan-box">
+          <div class="label">📋 Ringkasan</div>
+          <p>
+            Bab ini menjelaskan bahwa salat memiliki peran penting dalam mencegah perbuatan
+            keji dan munkar. Keji (fahsya') adalah perbuatan buruk yang melampaui batas
+            moral, sedangkan munkar adalah segala perbuatan yang dilarang oleh agama dan
+            ditolak oleh akal sehat. Melalui dalil Al-Qur'an dan hadis, dijelaskan bahwa
+            salat yang dilakukan dengan khusyuk dan benar dapat membentuk akhlak mulia,
+            melatih kedisiplinan, kejujuran, kesabaran, serta pengendalian diri.
+          </p>
+        </div>
+
+        <div class="nav-materi">
+          <button class="nav-materi-btn" onclick="tampilMateri('bab1-sub3')">← Bab 1: Zikir</button>
+          <button class="nav-materi-btn" onclick="tampilMateri('bab2-sub1')">Selanjutnya: 2.1 Keji &amp; Munkar →</button>
+        </div>
+      </div>
+
+      <!-- =====================================================================
+           BAB 2 – SUBBAB 2.1 – KEJI & MUNKAR + DALIL
+      ===================================================================== -->
+      <div class="materi-section" id="bab2-sub1">
+        <p class="materi-subjudul">BAB 2 › Subbab 2.1</p>
+        <h1 class="materi-judul">Pengertian Keji &amp; Munkar serta Dalil Al-Qur'an</h1>
+        <div class="divider"></div>
+
+        <h2 class="konten-h2">A. Pengertian Keji dan Munkar</h2>
+
+        <h3 class="konten-h3">1. Pengertian Keji (Fahsya')</h3>
+        <p>Kata "keji" dalam bahasa Arab disebut <strong>"fahsya'"</strong> (الفحشاء). Secara istilah, fahsya' adalah segala perbuatan atau ucapan yang sangat buruk, tidak bermoral, dan bertentangan dengan nilai-nilai agama Islam maupun norma masyarakat.</p>
+        <p><strong>Contoh perbuatan keji:</strong></p>
+        <ul class="konten-list">
+          <li>Perbuatan zina (hubungan di luar nikah)</li>
+          <li>Berkata-kata kotor dan jorok</li>
+          <li>Menampilkan aurat di depan umum</li>
+          <li>Menonton atau menyebarkan konten pornografi</li>
+          <li>Berbuat curang dan menipu</li>
+        </ul>
+
+        <h3 class="konten-h3">2. Pengertian Munkar</h3>
+        <p>Kata <strong>"munkar"</strong> (المنكر) berasal dari kata "nakara" yang berarti mengingkari. Secara istilah, munkar adalah segala sesuatu yang dilarang oleh Allah SWT dan Rasul-Nya, serta ditolak oleh akal sehat dan hati nurani yang bersih.</p>
+        <p><strong>Contoh perbuatan munkar:</strong></p>
+        <ul class="konten-list">
+          <li>Mencuri dan merampok</li>
+          <li>Berjudi</li>
+          <li>Mengonsumsi minuman keras dan narkoba</li>
+          <li>Berbohong dan memfitnah</li>
+          <li>Menyembah selain Allah (syirik)</li>
+          <li>Berbuat zalim kepada sesama</li>
+        </ul>
+
+        <h3 class="konten-h3">3. Perbedaan Keji dan Munkar</h3>
+        <div class="tabel-wrapper">
+          <table>
+            <thead><tr><th>Aspek</th><th>Keji (Fahsya')</th><th>Munkar</th></tr></thead>
+            <tbody>
+              <tr><td>Pengertian</td><td>Perbuatan sangat buruk yang melampaui batas moral</td><td>Perbuatan yang dilarang agama dan ditolak akal sehat</td></tr>
+              <tr><td>Cakupan</td><td>Lebih kepada perbuatan mesum dan tidak senonoh</td><td>Lebih luas, mencakup semua kemaksiatan</td></tr>
+              <tr><td>Contoh</td><td>Zina, berkata jorok</td><td>Mencuri, berjudi, mabuk</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 class="konten-h2">B. Dalil Al-Qur'an</h2>
+
+        <h3 class="konten-h3">Ayat Utama – QS. Al-Ankabut: 45</h3>
+        <div class="ayat-box">
+          <div class="ayat-arab">اتْلُ مَا أُوحِيَ إِلَيْكَ مِنَ الْكِتَابِ وَأَقِمِ الصَّلَاةَ ۖ إِنَّ الصَّلَاةَ تَنْهَىٰ عَنِ الْفَحْشَاءِ وَالْمُنكَرِ</div>
+          <p style="font-style:italic; color:#1A2B4A; margin:8px 0; font-size:0.92rem;">
+            "Bacalah Kitab (Al-Quran) yang telah diwahyukan kepadamu dan laksanakanlah salat.
+            Sesungguhnya salat itu mencegah dari (perbuatan) keji dan munkar."
+          </p>
+          <div class="ayat-sumber">QS. Al-Ankabut: 45</div>
+        </div>
+
+        <div class="info-card info">
+          <div class="label">📌 Poin Penting</div>
+          <p>Ayat ini menggunakan kata <strong>"aqimis shalah"</strong> (أَقِمِ الصَّلَاةَ) yang artinya "DIRIKANLAH salat" – bukan sekadar lakukan salat. Ini berarti salat harus dilaksanakan dengan <strong>sempurna, khusyuk, dan konsisten</strong>.</p>
+        </div>
+
+        <h3 class="konten-h3">Ayat Pendukung Lainnya</h3>
+        <div class="ayat-box">
+          <div class="ayat-arti">"Dan hendaklah di antara kamu ada segolongan orang yang menyeru kepada kebajikan, menyuruh (berbuat) yang makruf, dan mencegah dari yang mungkar."</div>
+          <div class="ayat-sumber">QS. Ali Imran: 104</div>
+        </div>
+
+        <h2 class="konten-h2">C. Hadis Pendukung</h2>
+        <div class="ayat-box">
+          <div class="ayat-latin">Rasulullah SAW bersabda:</div>
+          <p style="font-style:italic; color:#1A2B4A; font-size:0.93rem;">"Barang siapa yang salatnya tidak mencegahnya dari perbuatan keji dan munkar, maka salatnya hanya menambah jauh dirinya dari Allah."</p>
+          <div class="ayat-sumber">(HR. Thabrani)</div>
+        </div>
+
+        <div class="info-card warning">
+          <div class="label">⚠️ Perhatian</div>
+          <p>Hadis ini menegaskan bahwa kualitas salat dapat dinilai dari <strong>perubahan perilaku</strong> seseorang. Salat yang benar akan meninggalkan bekas positif dalam kehidupan sehari-hari!</p>
+        </div>
+
+        <div class="sumber-row">
+          <a href="https://forms.gle/22GYkzmfXnD5PTRb7" target="_blank" class="sumber-btn">📝 Kuis Bab 2</a>
+          <a href="https://online.fliphtml5.com/vnkhu/materi-2/#p=1" target="_blank" class="sumber-btn">📚 Ebook Bab 2</a>
+        </div>
+
+        <div class="nav-materi">
+          <button class="nav-materi-btn" onclick="tampilMateri('bab2-intro')">← Ringkasan Bab 2</button>
+          <button class="nav-materi-btn" onclick="tampilMateri('bab2-sub2')">Selanjutnya: 2.2 Hubungan Salat &amp; Akhlak →</button>
+        </div>
+      </div>
+
+      <!-- =====================================================================
+           BAB 2 – SUBBAB 2.2 – HUBUNGAN SALAT DENGAN AKHLAK
+      ===================================================================== -->
+      <div class="materi-section" id="bab2-sub2">
+        <p class="materi-subjudul">BAB 2 › Subbab 2.2</p>
+        <h1 class="materi-judul">Hubungan Salat dengan Akhlak</h1>
+        <div class="divider"></div>
+
+        <h2 class="konten-h2">A. Pengertian Akhlak</h2>
+        <p>Akhlak berasal dari bahasa Arab <strong>"khuluq"</strong> (خُلُق) yang berarti budi pekerti, tabiat, atau karakter. Secara istilah, akhlak adalah sifat yang tertanam dalam jiwa seseorang yang mendorongnya untuk melakukan sesuatu tanpa perlu berpikir panjang atau dipaksa.</p>
+        <div class="tabel-wrapper">
+          <table>
+            <thead><tr><th>Jenis Akhlak</th><th>Contoh</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Akhlak Karimah</strong> (Akhlak Mulia)</td><td>Jujur, sabar, amanah, rendah hati, dermawan</td></tr>
+              <tr><td><strong>Akhlak Mazmumah</strong> (Akhlak Tercela)</td><td>Bohong, sombong, dengki, kikir, kasar</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 class="konten-h2">B. Salat Sebagai Pembentuk Akhlak</h2>
+
+        <h4 class="konten-h4">1. Salat Melatih Kedisiplinan</h4>
+        <p>Salat dilakukan lima kali sehari pada waktu-waktu yang telah ditentukan. Seseorang yang disiplin dalam salat akan terbiasa disiplin dalam kehidupan sehari-hari – tepat waktu, tidak menunda pekerjaan, dan menghargai waktu.</p>
+
+        <h4 class="konten-h4">2. Salat Melatih Kejujuran</h4>
+        <p>Dalam salat, seseorang berhadapan langsung dengan Allah. Ia tidak bisa berbohong atau berpura-pura. Kebiasaan jujur dalam salat akan terbawa dalam kehidupan nyata.</p>
+
+        <h4 class="konten-h4">3. Salat Melatih Kesabaran</h4>
+        <p>Salat mengajarkan seseorang untuk berdiam diri, tenang, dan fokus. Kesabaran ini sangat dibutuhkan ketika menghadapi masalah, dikritik orang lain, atau saat belajar hal yang sulit.</p>
+
+        <h4 class="konten-h4">4. Salat Melatih Kerendahan Hati (Tawadhu')</h4>
+        <p>Saat sujud, seseorang meletakkan kepalanya di lantai – bagian tubuh yang paling mulia diletakkan di tempat yang paling rendah. Ini melambangkan betapa kecilnya manusia di hadapan Allah.</p>
+
+        <h4 class="konten-h4">5. Salat Melatih Kebersihan</h4>
+        <p>Sebelum salat, wajib melakukan wudhu yang tidak hanya membersihkan fisik, tetapi juga menyucikan hati. Kebiasaan bersuci ini mendorong seseorang untuk selalu menjaga kebersihan diri dan lingkungan.</p>
+
+        <h4 class="konten-h4">6. Salat Melatih Kepedulian Sosial</h4>
+        <p>Salat berjamaah di masjid mengajarkan persamaan derajat. Tidak ada perbedaan antara yang kaya dan miskin – semuanya berdiri dalam satu shaf yang sama.</p>
+
+        <h2 class="konten-h2">C. Mekanisme Salat dalam Membentuk Akhlak</h2>
+        <div class="info-card info"><div class="label">📌 Mekanisme 1: Pengingat (Reminder)</div><p>Setiap kali seseorang salat, ia membaca Al-Fatihah yang berisi pujian kepada Allah, permohonan pertolongan, dan doa untuk diberikan jalan yang lurus.</p></div>
+        <div class="info-card info"><div class="label">📌 Mekanisme 2: Pengendalian Diri (Self-Control)</div><p>Salat melatih seseorang untuk menahan diri dari hal-hal yang membatalkan salat. Kemampuan menahan diri ini kemudian diterapkan dalam kehidupan sehari-hari.</p></div>
+        <div class="info-card info"><div class="label">📌 Mekanisme 3: Koneksi dengan Allah (Spiritual Connection)</div><p>Salat membangun koneksi spiritual antara hamba dan Allah. Seseorang yang merasa dekat dengan Allah akan takut berbuat dosa karena menyadari Allah selalu melihatnya.</p></div>
+
+        <div class="sumber-row">
+          <a href="https://youtu.be/JAo9BhsXdME" target="_blank" class="sumber-btn">🎬 Video Bab 2 (1)</a>
+          <a href="https://youtu.be/8Ehn1FqWz6E" target="_blank" class="sumber-btn">🎬 Video Bab 2 (2)</a>
+        </div>
+
+        <div class="nav-materi">
+          <button class="nav-materi-btn" onclick="tampilMateri('bab2-sub1')">← 2.1 Keji &amp; Munkar</button>
+          <button class="nav-materi-btn" onclick="tampilMateri('bab2-sub3')">Selanjutnya: 2.3 Dampak Salat →</button>
+        </div>
+      </div>
+
+      <!-- =====================================================================
+           BAB 2 – SUBBAB 2.3 – DAMPAK SALAT
+      ===================================================================== -->
+      <div class="materi-section" id="bab2-sub3">
+        <p class="materi-subjudul">BAB 2 › Subbab 2.3</p>
+        <h1 class="materi-judul">Dampak Salat dalam Kehidupan Sehari-hari</h1>
+        <div class="divider"></div>
+
+        <h2 class="konten-h2">A. Dampak Salat bagi Diri Sendiri</h2>
+
+        <h3 class="konten-h3">1. Dampak Spiritual</h3>
+        <div class="ayat-box">
+          <p style="font-style:italic; color:#1A2B4A; font-size:0.93rem;">"Salat adalah tiang agama. Barang siapa mendirikannya, maka ia telah menegakkan agama. Barang siapa meninggalkannya, maka ia telah merobohkan agama."</p>
+          <div class="ayat-sumber">(HR. Baihaqi)</div>
+        </div>
+        <p>Seseorang yang rajin salat akan memiliki iman yang kuat, hubungan yang dekat dengan Allah, ketenangan hati, dan keyakinan bahwa hidup memiliki tujuan yang jelas.</p>
+
+        <h3 class="konten-h3">2. Dampak Psikologis (Mental)</h3>
+        <p>Penelitian modern membuktikan bahwa salat yang dilakukan dengan khusyuk dapat:</p>
+        <ul class="konten-list">
+          <li>✅ Mengurangi stres dan kecemasan</li>
+          <li>✅ Memberikan rasa tenang dan damai</li>
+          <li>✅ Membantu mengatasi depresi</li>
+          <li>✅ Meningkatkan rasa syukur dan kebahagiaan</li>
+          <li>✅ Menguatkan mental dalam menghadapi cobaan</li>
+        </ul>
+
+        <h3 class="konten-h3">3. Dampak Fisik (Kesehatan Tubuh)</h3>
+        <div class="tabel-wrapper">
+          <table>
+            <thead><tr><th>Gerakan Salat</th><th>Manfaat Kesehatan</th></tr></thead>
+            <tbody>
+              <tr><td>Takbiratul ihram</td><td>Melatih otot bahu dan lengan</td></tr>
+              <tr><td>Ruku'</td><td>Melatih tulang belakang &amp; melancarkan aliran darah ke kepala</td></tr>
+              <tr><td>Sujud</td><td>Meningkatkan aliran darah ke otak, baik untuk konsentrasi</td></tr>
+              <tr><td>Duduk tahiyat</td><td>Melatih kelenturan lutut dan pergelangan kaki</td></tr>
+              <tr><td>Salam</td><td>Melatih otot leher</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 class="konten-h2">B. Dampak Salat bagi Keluarga</h2>
+        <ul class="konten-list">
+          <li>1. <strong>Menjadi teladan</strong> – Anak yang melihat orang tuanya salat akan termotivasi untuk ikut salat.</li>
+          <li>2. <strong>Menciptakan keharmonisan</strong> – Keluarga yang salat bersama akan lebih solid dan harmonis.</li>
+          <li>3. <strong>Terhindar dari perselisihan</strong> – Orang yang salat akan lebih sabar dan tidak mudah marah.</li>
+          <li>4. <strong>Mendidik karakter anak</strong> – Salat berjamaah di rumah menjadi media pendidikan karakter yang efektif.</li>
+        </ul>
+
+        <h2 class="konten-h2">C. Dampak Salat bagi Masyarakat</h2>
+        <ul class="konten-list">
+          <li>1. <strong>Menciptakan masyarakat yang bermoral</strong> – ketika banyak anggota masyarakat yang rajin salat dan salatnya mencegah mereka dari keji dan munkar.</li>
+          <li>2. <strong>Mengurangi angka kejahatan</strong> – daerah dengan tingkat kepatuhan ibadah yang tinggi cenderung memiliki angka kejahatan yang lebih rendah.</li>
+          <li>3. <strong>Mempererat persaudaraan</strong> – salat Jumat dan berjamaah mempertemukan masyarakat dari berbagai latar belakang.</li>
+          <li>4. <strong>Mendorong kepedulian sosial</strong> – salat menumbuhkan empati dan mendorong aksi sosial nyata.</li>
+        </ul>
+
+        <h2 class="konten-h2">D. Dampak Meninggalkan Salat</h2>
+        <div class="info-card warning">
+          <div class="label">⚠️ Peringatan</div>
+          <p>Allah SWT memperingatkan: <em>"Maka datanglah sesudah mereka, pengganti yang jelek yang menyia-nyiakan salat dan memperturutkan hawa nafsunya, maka mereka kelak akan menemui kesesatan."</em> (QS. Maryam: 59)</p>
+        </div>
+
+        <!-- Video Bab 2 -->
+        <h2 class="konten-h2">🎬 Video Pembelajaran</h2>
+        <div class="video-wrapper">
+          <iframe src="https://www.youtube.com/embed/JAo9BhsXdME" title="Video Bab 2" allowfullscreen loading="lazy"></iframe>
+        </div>
+
+        <!-- Ebook Bab 2 -->
+        <h2 class="konten-h2">📚 Ebook Bab 2</h2>
+        <div class="embed-wrapper">
+          <iframe src="https://online.fliphtml5.com/vnkhu/materi-2/#p=1" width="100%" height="480" title="Ebook Bab 2" loading="lazy"></iframe>
+        </div>
+
+        <div class="sumber-row">
+          <a href="https://forms.gle/22GYkzmfXnD5PTRb7" target="_blank" class="sumber-btn">📝 Kuis Bab 2</a>
+        </div>
+
+        <div class="nav-materi">
+          <button class="nav-materi-btn" onclick="tampilMateri('bab2-sub2')">← 2.2 Hubungan Salat &amp; Akhlak</button>
+          <button class="nav-materi-btn" onclick="tampilMateri('bab3-intro')">Selanjutnya: Bab 3 →</button>
+        </div>
+      </div>
+
+      <!-- =====================================================================
+           BAB 3 – RINGKASAN
+      ===================================================================== -->
+      <div class="materi-section" id="bab3-intro">
+        <p class="materi-subjudul">BAB 3 – Istikamah Salat &amp; Zikir</p>
+        <h1 class="materi-judul">Ringkasan Bab 3</h1>
+        <div class="divider"></div>
+
+        <div class="ringkasan-box">
+          <div class="label">📋 Ringkasan</div>
+          <p>
+            Bab ini membahas pentingnya istikamah dalam melaksanakan salat dan zikir dalam
+            kehidupan sehari-hari. Salat lima waktu merupakan kewajiban utama seorang Muslim
+            yang memiliki banyak hikmah, baik secara spiritual, psikologis, sosial, maupun
+            kesehatan. Dalam bab ini dijelaskan berbagai cara menjaga istikamah, seperti
+            memperkuat niat, membuat jadwal ibadah, mencari lingkungan yang baik, serta
+            membiasakan zikir dalam setiap aktivitas.
+          </p>
+        </div>
+
+        <div class="nav-materi">
+          <button class="nav-materi-btn" onclick="tampilMateri('bab2-sub3')">← Bab 2: Dampak Salat</button>
+          <button class="nav-materi-btn" onclick="tampilMateri('bab3-sub1')">Selanjutnya: 3.1 Salat 5 Waktu →</button>
+        </div>
+      </div>
+
+      <!-- =====================================================================
+           BAB 3 – SUBBAB 3.1 – PENTINGNYA SALAT 5 WAKTU
+      ===================================================================== -->
+      <div class="materi-section" id="bab3-sub1">
+        <p class="materi-subjudul">BAB 3 › Subbab 3.1</p>
+        <h1 class="materi-judul">Pentingnya Salat Lima Waktu</h1>
+        <div class="divider"></div>
+
+        <h2 class="konten-h2">A. Pengertian Salat Lima Waktu</h2>
+        <p>Salat lima waktu adalah salat wajib yang harus dilaksanakan oleh setiap Muslim yang sudah baligh dan berakal sehat, setiap hari tanpa terkecuali. Salat lima waktu diwajibkan pada malam <strong>Isra' Mi'raj</strong>, ketika Rasulullah SAW menerima perintah langsung dari Allah SWT.</p>
+
+        <h2 class="konten-h2">B. Nama, Waktu, dan Jumlah Rakaat</h2>
+        <div class="tabel-wrapper">
+          <table>
+            <thead><tr><th>No</th><th>Nama Salat</th><th>Waktu Pelaksanaan</th><th>Jumlah Rakaat</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>Subuh</td><td>Dari terbit fajar shadiq hingga terbit matahari</td><td>2 rakaat</td></tr>
+              <tr><td>2</td><td>Dzuhur</td><td>Dari matahari tergelincir hingga bayangan sama panjang</td><td>4 rakaat</td></tr>
+              <tr><td>3</td><td>Ashar</td><td>Dari akhir waktu Dzuhur hingga sebelum matahari terbenam</td><td>4 rakaat</td></tr>
+              <tr><td>4</td><td>Maghrib</td><td>Dari matahari terbenam hingga hilangnya mega merah</td><td>3 rakaat</td></tr>
+              <tr><td>5</td><td>Isya</td><td>Dari hilangnya mega merah hingga terbit fajar</td><td>4 rakaat</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="info-card info">
+          <div class="label">📌 Total</div>
+          <p><strong>17 rakaat dalam sehari semalam.</strong></p>
+        </div>
+
+        <h2 class="konten-h2">C. Dalil Kewajiban Salat Lima Waktu</h2>
+        <div class="ayat-box">
+          <div class="ayat-arti">"Sesungguhnya salat itu adalah kewajiban yang ditentukan waktunya atas orang-orang yang beriman."</div>
+          <div class="ayat-sumber">QS. An-Nisa: 103</div>
+        </div>
+        <div class="ayat-box">
+          <div class="ayat-arti">"Islam dibangun di atas lima perkara: bersaksi bahwa tiada Tuhan selain Allah dan Muhammad adalah utusan Allah, mendirikan salat, menunaikan zakat, berpuasa Ramadan, dan naik haji ke Baitullah."</div>
+          <div class="ayat-sumber">(HR. Bukhari dan Muslim)</div>
+        </div>
+
+        <h2 class="konten-h2">D. Mengapa Salat Lima Waktu Sangat Penting?</h2>
+        <div class="info-card"><div class="label">🕌 Tiang Agama</div><p>Ibarat rumah tanpa tiang, bangunan keimanan seseorang yang meninggalkan salat akan rapuh dan roboh.</p></div>
+        <div class="info-card info"><div class="label">⏰ Membentuk Rutinitas Positif</div><p>Lima waktu salat yang tersebar sepanjang hari menciptakan ritme hidup yang sehat dan teratur dengan manajemen waktu yang baik.</p></div>
+        <div class="info-card warning"><div class="label">⚠️ Akibat Meninggalkan Salat</div><p>Hati menjadi keras, mudah stres, kehilangan arah hidup, dan mudah terjerumus dalam pergaulan buruk. Di akhirat: mendapat kesesatan (QS. Maryam: 59).</p></div>
+
+        <div class="sumber-row">
+          <a href="https://forms.gle/KAvgRvuUi44yFCYF8" target="_blank" class="sumber-btn">📝 Kuis Bab 3</a>
+          <a href="https://online.fliphtml5.com/izaek/materi-3/" target="_blank" class="sumber-btn">📚 Ebook Bab 3</a>
+        </div>
+
+        <div class="nav-materi">
+          <button class="nav-materi-btn" onclick="tampilMateri('bab3-intro')">← Ringkasan Bab 3</button>
+          <button class="nav-materi-btn" onclick="tampilMateri('bab3-sub2')">Selanjutnya: 3.2 Hikmah →</button>
+        </div>
+      </div>
+
+      <!-- =====================================================================
+           BAB 3 – SUBBAB 3.2 – HIKMAH SALAT & ZIKIR
+      ===================================================================== -->
+      <div class="materi-section" id="bab3-sub2">
+        <p class="materi-subjudul">BAB 3 › Subbab 3.2</p>
+        <h1 class="materi-judul">Hikmah Salat dan Zikir</h1>
+        <div class="divider"></div>
+
+        <h2 class="konten-h2">A. Hikmah Salat</h2>
+
+        <h3 class="konten-h3">1. Hikmah Spiritual</h3>
+        <div class="ayat-box">
+          <p style="font-style:italic; color:#1A2B4A; font-size:0.93rem;">"Bagaimana pendapatmu jika ada sungai di depan pintu seseorang, lalu ia mandi di sana lima kali sehari. Apakah masih ada kotoran yang tersisa? Begitulah perumpamaan salat lima waktu, Allah menghapus dosa-dosa dengannya."</p>
+          <div class="ayat-sumber">(HR. Bukhari dan Muslim)</div>
+        </div>
+
+        <h3 class="konten-h3">2. Hikmah Psikologis</h3>
+        <ul class="konten-list">
+          <li>✅ Mengurangi stres – gerakan dan bacaan dalam salat mengaktifkan sistem saraf parasimpatis</li>
+          <li>✅ Mengurangi kecemasan – keyakinan bahwa Allah selalu bersama memberikan rasa aman</li>
+          <li>✅ Meningkatkan kebahagiaan – salat khusyuk merangsang produksi serotonin dan endorfin</li>
+          <li>✅ Memperkuat ketahanan mental – orang yang rajin salat lebih kuat menghadapi cobaan</li>
+        </ul>
+
+        <h3 class="konten-h3">3. Hikmah Fisik (Kesehatan)</h3>
+        <ul class="konten-list">
+          <li>🔵 Posisi sujud meningkatkan aliran darah ke otak, mencegah penyakit kepala</li>
+          <li>🔵 Gerakan ruku' dan sujud memperkuat otot punggung dan mencegah sakit pinggang</li>
+          <li>🔵 Wudhu membersihkan kuman dari tangan, wajah, dan anggota tubuh lainnya</li>
+          <li>🔵 Salat subuh sangat baik untuk metabolisme dan paru-paru karena udara pagi kaya oksigen</li>
+        </ul>
+
+        <h3 class="konten-h3">4. Hikmah Sosial</h3>
+        <ul class="konten-list">
+          <li>🤝 Salat berjamaah mempertemukan masyarakat tanpa memandang status sosial</li>
+          <li>🤝 Melatih jiwa kepemimpinan melalui peran imam</li>
+          <li>🤝 Mengajarkan kesetaraan – semua berdiri sejajar dalam satu shaf</li>
+        </ul>
+
+        <h2 class="konten-h2">B. Hikmah Zikir</h2>
+        <div class="ayat-box">
+          <div class="ayat-arab">أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ</div>
+          <div class="ayat-arti">"Ingatlah, hanya dengan mengingat Allah hati menjadi tenteram."</div>
+          <div class="ayat-sumber">QS. Ar-Ra'd: 28</div>
+        </div>
+
+        <h4 class="konten-h4">Macam-macam Zikir</h4>
+        <div class="info-card info"><div class="label">🗣️ Zikir dengan Lisan</div><p>Menyebut nama Allah secara langsung: Subhanallah, Alhamdulillah, Allahu Akbar, La ilaha illallah, Astaghfirullah.</p></div>
+        <div class="info-card info"><div class="label">❤️ Zikir dengan Hati</div><p>Selalu mengingat Allah dalam setiap situasi – ini adalah tingkatan zikir yang paling tinggi.</p></div>
+        <div class="info-card info"><div class="label">🙌 Zikir dengan Perbuatan</div><p>Setiap perbuatan baik yang diniatkan karena Allah adalah zikir – belajar karena Allah, membantu teman karena Allah, bersikap jujur karena Allah.</p></div>
+
+        <h4 class="konten-h4">Hikmah Utama Zikir</h4>
+        <ul class="konten-list">
+          <li>✨ <strong>Ketenangan hati</strong> – gelombang otak berada dalam kondisi alpha yang menghasilkan ketenangan mendalam</li>
+          <li>✨ <strong>Perlindungan dari setan</strong> – Rasulullah SAW bersabda bahwa setan akan lari dari orang yang banyak berzikir</li>
+          <li>✨ <strong>Mendatangkan rahmat Allah</strong> – "Karena itu, ingatlah kamu kepada-Ku niscaya Aku ingat (pula) kepadamu." (QS. Al-Baqarah: 152)</li>
+          <li>✨ <strong>Menghapus dosa dan mengangkat derajat</strong></li>
+        </ul>
+
+        <!-- Video Bab 3 -->
+        <h2 class="konten-h2">🎬 Video Pembelajaran</h2>
+        <div class="video-wrapper">
+          <iframe src="https://www.youtube.com/embed/KI_vv_N24IA" title="Video Bab 3" allowfullscreen loading="lazy"></iframe>
+        </div>
+
+        <!-- Ebook Bab 3 -->
+        <h2 class="konten-h2">📚 Ebook Bab 3</h2>
+        <div class="embed-wrapper">
+          <iframe src="https://online.fliphtml5.com/izaek/materi-3/" width="100%" height="480" title="Ebook Bab 3" loading="lazy"></iframe>
+        </div>
+
+        <div class="nav-materi">
+          <button class="nav-materi-btn" onclick="tampilMateri('bab3-sub1')">← 3.1 Salat 5 Waktu</button>
+          <button class="nav-materi-btn" onclick="tampilMateri('bab3-sub3')">Selanjutnya: 3.3 Cara Istikamah →</button>
+        </div>
+      </div>
+
+      <!-- =====================================================================
+           BAB 3 – SUBBAB 3.3 – CARA ISTIKAMAH & PENERAPAN
+      ===================================================================== -->
+      <div class="materi-section" id="bab3-sub3">
+        <p class="materi-subjudul">BAB 3 › Subbab 3.3</p>
+        <h1 class="materi-judul">Cara Istikamah dan Penerapannya dalam Kehidupan Sehari-hari</h1>
+        <div class="divider"></div>
+
+        <h2 class="konten-h2">A. Pengertian Istikamah</h2>
+        <p>Istikamah (إِسْتِقَامَة) berasal dari kata "qama" yang berarti berdiri tegak, lurus, dan konsisten. Secara istilah, istikamah berarti <strong>teguh pendirian, konsisten, dan tidak pernah berhenti</strong> dalam melaksanakan perintah Allah dan menjauhi larangan-Nya.</p>
+        <div class="ayat-box">
+          <div class="ayat-arti">"Sesungguhnya orang-orang yang berkata, 'Tuhan kami adalah Allah,' kemudian mereka beristikamah, tidak ada rasa khawatir pada mereka, dan mereka tidak bersedih hati."</div>
+          <div class="ayat-sumber">QS. Al-Ahqaf: 13</div>
+        </div>
+        <div class="ayat-box">
+          <div class="ayat-arti">"Amalan yang paling dicintai oleh Allah adalah amalan yang paling konsisten (dawam) meskipun sedikit."</div>
+          <div class="ayat-sumber">(HR. Bukhari dan Muslim)</div>
+        </div>
+
+        <div class="info-card info">
+          <div class="label">💡 Pelajaran Penting</div>
+          <p>Salat dan zikir yang dilakukan <strong>sedikit namun konsisten setiap hari</strong> lebih dicintai Allah daripada amal yang banyak tapi hanya sekali-kali!</p>
+        </div>
+
+        <h2 class="konten-h2">B. Cara-cara Istikamah dalam Salat dan Zikir</h2>
+
+        <h4 class="konten-h4">1. Memperkuat Niat dan Motivasi</h4>
+        <p>Istikamah dimulai dari niat yang kuat. Ingatkan diri sendiri setiap hari bahwa salat adalah kewajiban yang tidak boleh ditinggalkan.</p>
+        <div class="info-card"><div class="label">💡 Tips Praktis</div><p>Tulis niat dan motivasimu di selembar kertas dan tempelkan di tempat yang sering kamu lihat.</p></div>
+
+        <h4 class="konten-h4">2. Mulai dari yang Kecil dan Konsisten</h4>
+        <p>Jangan langsung memaksakan diri untuk melakukan ibadah yang besar. Mulailah dari yang wajib (salat lima waktu) dan lakukan secara konsisten. Setelah itu, tambahkan sedikit demi sedikit.</p>
+
+        <h4 class="konten-h4">3. Buat Jadwal dan Alarm</h4>
+        <ul class="konten-list">
+          <li>⏰ Pasang alarm untuk setiap waktu salat</li>
+          <li>📱 Gunakan aplikasi pengingat salat di handphone</li>
+          <li>📋 Buat jadwal harian yang menyertakan waktu salat sebagai prioritas utama</li>
+        </ul>
+
+        <h4 class="konten-h4">4. Mencari Lingkungan yang Mendukung</h4>
+        <div class="ayat-box">
+          <div class="ayat-arti">"Seseorang itu tergantung agama teman dekatnya, maka hendaklah salah seorang dari kalian melihat siapa yang menjadi teman dekatnya."</div>
+          <div class="ayat-sumber">(HR. Abu Dawud)</div>
+        </div>
+        <p>Bergabunglah dengan kelompok pengajian, organisasi remaja masjid, atau komunitas keagamaan di sekolah.</p>
+
+        <h4 class="konten-h4">5. Membiasakan Zikir di Setiap Kesempatan</h4>
+        <div class="tabel-wrapper">
+          <table>
+            <thead><tr><th>Situasi</th><th>Zikir yang Dibaca</th></tr></thead>
+            <tbody>
+              <tr><td>Sebelum kegiatan</td><td>Bismillah</td></tr>
+              <tr><td>Menerima kebaikan</td><td>Alhamdulillah</td></tr>
+              <tr><td>Melihat keindahan alam</td><td>Subhanallah</td></tr>
+              <tr><td>Melakukan kesalahan</td><td>Astaghfirullah</td></tr>
+              <tr><td>Mendapat musibah</td><td>Innalillahi wa inna ilaihi raji'un</td></tr>
+              <tr><td>Sebelum belajar</td><td>Bismillah, Rabbi zidni ilman</td></tr>
+              <tr><td>Sebelum tidur</td><td>Bismika allahumma amutu wa ahya</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 class="konten-h2">C. Contoh Jadwal Harian Siswa SMP yang Istikamah</h2>
+        <div class="tabel-wrapper">
+          <table>
+            <thead><tr><th>Waktu</th><th>Kegiatan</th></tr></thead>
+            <tbody>
+              <tr><td>04.30</td><td>Bangun tidur, berdoa, dan wudhu</td></tr>
+              <tr><td>04.45</td><td>Salat Subuh + zikir dan doa pagi</td></tr>
+              <tr><td>05.00</td><td>Membaca Al-Quran (1 halaman)</td></tr>
+              <tr><td>05.30</td><td>Mandi, sarapan, persiapan sekolah</td></tr>
+              <tr><td>07.00</td><td>Berangkat sekolah (baca doa keluar rumah)</td></tr>
+              <tr><td>12.00</td><td>Salat Dzuhur di sekolah</td></tr>
+              <tr><td>15.30</td><td>Salat Ashar + zikir petang</td></tr>
+              <tr><td>18.00</td><td>Salat Maghrib + membaca Al-Quran</td></tr>
+              <tr><td>19.30</td><td>Salat Isya</td></tr>
+              <tr><td>21.30</td><td>Berdoa sebelum tidur</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 class="konten-h2">D. Tokoh Teladan Istikamah</h2>
+        <div class="info-card"><div class="label">🌟 Rasulullah SAW</div><p>Rasulullah SAW adalah teladan istikamah yang sempurna. Beliau tidak pernah meninggalkan salat malam (tahajud) meskipun sudah dijamin masuk surga. Ketika ditanya mengapa masih beribadah begitu giat, beliau menjawab: <em>"Apakah aku tidak boleh menjadi hamba yang bersyukur?"</em> (HR. Bukhari dan Muslim)</p></div>
+        <div class="info-card info"><div class="label">🌟 Abdullah bin Umar RA</div><p>Sahabat Nabi yang terkenal dengan istikamahnya. Beliau tidak pernah meninggalkan salat berjamaah di masjid selama puluhan tahun.</p></div>
+
+        <!-- Kuis Bab 3 -->
+        <h2 class="konten-h2">📝 Kuis Bab 3</h2>
+        <div class="embed-wrapper">
+          <iframe
+            src="https://docs.google.com/forms/d/e/1FAIpQLSfKAvgRvuUi44yFCYF8/viewform?embedded=true"
+            width="100%"
+            height="600"
+            title="Kuis Bab 3"
+            loading="lazy">
+          </iframe>
+        </div>
+        <p style="font-size:0.85rem; color:var(--clr-text-light); margin-top:8px;">
+          Jika kuis tidak tampil, <a href="https://forms.gle/KAvgRvuUi44yFCYF8" target="_blank" style="color:var(--clr-primary);">klik di sini untuk membuka di tab baru</a>.
+        </p>
+
+        <div class="sumber-row">
+          <a href="https://forms.gle/KAvgRvuUi44yFCYF8" target="_blank" class="sumber-btn">📝 Kuis Bab 3</a>
+          <a href="https://online.fliphtml5.com/izaek/materi-3/" target="_blank" class="sumber-btn">📚 Ebook Bab 3</a>
+          <a href="https://youtu.be/KI_vv_N24IA" target="_blank" class="sumber-btn">🎬 Video Bab 3</a>
+        </div>
+
+        <div class="nav-materi">
+          <button class="nav-materi-btn" onclick="tampilMateri('bab3-sub2')">← 3.2 Hikmah Salat &amp; Zikir</button>
+          <button class="nav-materi-btn" disabled>✅ Materi Selesai!</button>
+        </div>
+      </div>
+      <!-- /konten-area -->
+
+    </main>
+  </div><!-- /lms-layout -->
+  </div>
+
+  <!-- Script khusus halaman belajar -->
   <script src="script.js"></script>
+  <script>
+    // =====================================================================
+    // JAVASCRIPT HALAMAN BELAJAR.HTML
+    // Fungsi navigasi sidebar dan tampil/sembunyi materi
+    // =====================================================================
 
+    // Daftar semua ID materi dan urutan navigasinya
+    var daftarMateri = [
+      'welcome',
+      'bab1-intro', 'bab1-sub1', 'bab1-sub2', 'bab1-sub3',
+      'bab2-intro', 'bab2-sub1', 'bab2-sub2', 'bab2-sub3',
+      'bab3-intro', 'bab3-sub1', 'bab3-sub2', 'bab3-sub3'
+    ];
+
+    // Judul untuk breadcrumb
+    var judulMateri = {
+      'welcome'    : 'Selamat Datang',
+      'bab1-intro' : 'Bab 1 › Ringkasan',
+      'bab1-sub1'  : 'Bab 1 › 1.1 Pengertian & Kedudukan Sholat',
+      'bab1-sub2'  : 'Bab 1 › 1.2 Dalil, Rukun & Keutamaan',
+      'bab1-sub3'  : 'Bab 1 › 1.3 Pengertian, Bentuk & Manfaat Zikir',
+      'bab2-intro' : 'Bab 2 › Ringkasan',
+      'bab2-sub1'  : 'Bab 2 › 2.1 Keji & Munkar + Dalil',
+      'bab2-sub2'  : 'Bab 2 › 2.2 Hubungan Salat dengan Akhlak',
+      'bab2-sub3'  : 'Bab 2 › 2.3 Dampak Salat',
+      'bab3-intro' : 'Bab 3 › Ringkasan',
+      'bab3-sub1'  : 'Bab 3 › 3.1 Pentingnya Salat Lima Waktu',
+      'bab3-sub2'  : 'Bab 3 › 3.2 Hikmah Salat & Zikir',
+      'bab3-sub3'  : 'Bab 3 › 3.3 Cara Istikamah & Penerapan'
+    };
+
+    var materiAktif = 'welcome'; // Materi yang sedang ditampilkan
+
+    // ---- Fungsi: Tampilkan materi berdasarkan ID ----
+    function tampilMateri(id) {
+      // Sembunyikan materi yang sedang aktif
+      var aktif = document.getElementById(materiAktif);
+      if (aktif) aktif.classList.remove('aktif');
+
+      // Tampilkan materi baru
+      var baru = document.getElementById(id);
+      if (baru) {
+        baru.classList.add('aktif');
+        materiAktif = id;
+      }
+
+      // Update breadcrumb
+      var bc = document.getElementById('breadcrumb-text');
+      if (bc) bc.textContent = judulMateri[id] || id;
+
+      // Update progress bar
+      var idx = daftarMateri.indexOf(id);
+      var persen = Math.round((idx / (daftarMateri.length - 1)) * 100);
+      var bar = document.getElementById('progress-bar');
+      if (bar) bar.style.width = persen + '%';
+
+      // Highlight tombol sidebar
+      document.querySelectorAll('.subbab-btn').forEach(function(btn) {
+        btn.classList.remove('aktif');
+      });
+      // Cari tombol sidebar yang sesuai
+      document.querySelectorAll('.subbab-btn').forEach(function(btn) {
+        if (btn.getAttribute('onclick') === "tampilMateri('" + id + "')") {
+          btn.classList.add('aktif');
+          // Buka bab induk jika tersembunyi
+          var parent = btn.closest('.subbab-list');
+          if (parent && !parent.classList.contains('terbuka')) {
+            parent.classList.add('terbuka');
+            var babId = parent.id;
+            var babBtn = document.getElementById('btn-' + babId);
+            if (babBtn) {
+              babBtn.classList.add('aktif');
+              var arrow = document.getElementById('arrow-' + babId);
+              if (arrow) arrow.style.transform = 'rotate(90deg)';
+            }
+          }
+        }
+      });
+
+      // Gulir ke atas area konten
+      var konten = document.getElementById('konten-area');
+      if (konten) konten.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ---- Fungsi: Toggle buka/tutup bab di sidebar ----
+    function toggleBab(babId) {
+      var list  = document.getElementById(babId);
+      var btn   = document.getElementById('btn-' + babId);
+      var arrow = document.getElementById('arrow-' + babId);
+
+      if (list) list.classList.toggle('terbuka');
+      if (btn)  btn.classList.toggle('aktif');
+      if (arrow) {
+        arrow.style.transform =
+          list.classList.contains('terbuka') ? 'rotate(90deg)' : 'rotate(0deg)';
+      }
+    }
+
+    // ---- Fungsi: Toggle sidebar di mobile ----
+    function toggleSidebar() {
+      var inner  = document.getElementById('sidebar-inner');
+      var toggle = document.getElementById('sidebar-toggle');
+      if (inner)  inner.classList.toggle('terbuka');
+      if (toggle) toggle.textContent =
+        inner.classList.contains('terbuka') ? '📚 Tutup Daftar Materi ▴' : '📚 Daftar Materi ▾';
+    }
+
+    // ---- Buka sidebar secara default di desktop ----
+    window.addEventListener('load', function () {
+      if (window.innerWidth > 768) {
+        var inner = document.getElementById('sidebar-inner');
+        if (inner) inner.classList.add('terbuka');
+      }
+    });
+  </script>
 </body>
 </html>
